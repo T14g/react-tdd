@@ -35,8 +35,14 @@ describe('AppointMentsDayView', () => {
     let container;
     const today = new Date();
     const appointments = [
-        { startsAt: today.setHours(12, 0) },
-        { startsAt: today.setHours(13, 0) },
+        {
+            startsAt: today.setHours(12, 0),
+            customer: { firstName: 'John' }
+        },
+        {
+            startsAt: today.setHours(13, 0),
+            customer: { firstName: 'Jordan' }
+        },
     ];
 
     beforeEach(() => {
@@ -51,7 +57,6 @@ describe('AppointMentsDayView', () => {
     });
 
     it('renders multiple appointments in a on element', () => {
-
         render(<AppointmentsDayView appointments={appointments} />);
 
         expect(container.querySelector('ol')).not.toBeNull();
@@ -60,7 +65,6 @@ describe('AppointMentsDayView', () => {
     });
 
     it('renders each appointment in an li', () => {
-
         render(<AppointmentsDayView appointments={appointments} />);
 
         expect(container.querySelectorAll('li')).toHaveLength(2);
@@ -73,5 +77,17 @@ describe('AppointMentsDayView', () => {
             container.querySelectorAll('li')[1].textContent)
             .toEqual('13:00');
     });
+
+    it('initially shows a message saying there no appointments today', () => {
+        render(<AppointmentsDayView appointments={[]} />);
+
+        expect(container.textContent).toMatch('No appointments');
+    });
+
+    it('selects the first appointment by default', () => {
+        render(<AppointmentsDayView appointments={appointments} />);
+        expect(container.textContent).toMatch('John');
+    });
+
 });
 
