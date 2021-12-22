@@ -21,5 +21,15 @@ export const AppointmentsDayView = ({ appointments }) => (
                 ))
             }
         </ol>
+
+
+
+        {
+            appointments.length === 0 ? (
+                <p>No appointments</p>
+            ) : (
+                <Appointment {...appointments[0]} />
+            )
+        }
     </div>
 );
