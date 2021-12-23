@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom'
 import ReactTestUtils from 'react-dom/test-utils';
-import { Appointment, AppointmentsDayView } from '../src/Appointment';
+import { Appointment, AppointmentsDayView } from '../src/AppointmentsDayView';
 // A set of tests
 describe('Appointment', () => {
     let container, customer;
@@ -20,6 +20,15 @@ describe('Appointment', () => {
 
         // To match = anywhere in body textContent
         expect(container.textContent).toMatch('John');
+    });
+
+    //A single test 
+    it('renders the customer last name', () => {
+        customer = { firstName: 'Silva' };
+        render(<Appointment customer={customer} />);
+
+        // To match = anywhere in body textContent
+        expect(container.textContent).toMatch('Silva');
     });
 
     // Triangulation
