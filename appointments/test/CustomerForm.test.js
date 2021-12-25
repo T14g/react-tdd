@@ -6,6 +6,7 @@ describe('CustomerForm', () => {
     let render, container;
 
     const form = id => container.querySelector(`form[id="${id}"]`);
+    const firstNameField = () => form('customer').elements.firstName;
 
     beforeEach(() => {
         // This function is executed imediatly IIFE
@@ -27,13 +28,11 @@ describe('CustomerForm', () => {
 
     it('renders the firt name field as a text box', () => {
         render(<CustomerForm />);
-        const field = form('customer').elements.firstName;
-        expectInputToBeOfTypeText(field);
+        expectInputToBeOfTypeText(firstNameField());
     });
 
     it('includes the existing value for the first name', () => {
         render(<CustomerForm firstName="John" />);
-        const field = form('customer').elements.firstName;
-        expect(field.value).toEqual('John');
+        expect(firstNameField().value).toEqual('John');
     });
 });
