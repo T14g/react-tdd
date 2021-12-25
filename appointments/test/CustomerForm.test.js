@@ -19,11 +19,21 @@ describe('CustomerForm', () => {
         ).not.toBeNull();
     });
 
+    const expectInputToBeOfTypeText = formEl => {
+        expect(formEl).not.toBeNull();
+        expect(formEl.tagName).toEqual('INPUT');
+        expect(formEl.type).toEqual('text')
+    };
+
     it('renders the firt name field as a text box', () => {
         render(<CustomerForm />);
         const field = form('customer').elements.firstName;
-        expect(field).not.toBeNull();
-        expect(field.tagName).toEqual('INPUT');
-        expect(field.type).toEqual('text')
+        expectInputToBeOfTypeText(field);
+    });
+
+    it('includes the existing value for the first name', () => {
+        render(<CustomerForm firstName="John" />);
+        const field = form('customer').elements.firstName;
+        expect(field.value).toEqual('John');
     });
 });
