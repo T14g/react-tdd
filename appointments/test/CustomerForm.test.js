@@ -1,4 +1,5 @@
 import React from "react";
+import ReactTestUtils from 'react-dom/test-utils';
 import { createContainer } from "./domManipulators";
 import { CustomerForm } from '../src/CustomerForm';
 
@@ -46,5 +47,21 @@ describe('CustomerForm', () => {
     it('assigns an id that matches the label id for the first name field', () => {
         render(<CustomerForm />);
         expect(firstNameField().id).toEqual('firstName');
+    });
+
+    it('saves the existing first name when submitted', async () => {
+        expect.hasAssertions();
+
+        // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
+        // And Assert code is inside of onSubmit
+        render(
+            <CustomerForm
+                firstName="John"
+                onSubmit={({ firstName }) =>
+                    expect(firstName).toEqual('John')
+                }
+            />
+        );
+        await ReactTestUtils.Simulate.submit(form('customer'));
     });
 });
