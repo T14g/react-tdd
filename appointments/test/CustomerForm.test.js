@@ -106,7 +106,12 @@ describe('CustomerForm', () => {
     });
 
     describe('last name field', () => {
-        // ... tests ...
+        itRendersAsATextBox('lastName');
+        itIncludesTheExistingValue('lastName', 'Silva');
+        itRendersALabel('lastName', 'Last Name');
+        itAssignsAnIdThatMatchesLabelId('lastName', 'lastName');
+        itSubmitsExistingValue('lastName', 'Silva');
+        itSubmitsNewValue('lastName', 'Silva');
     });
 
     describe('phone number field', () => {
