@@ -15,7 +15,7 @@ describe('CustomerForm', () => {
         ({ render, container } = createContainer());
     });
 
-    const expectInputToBeOfTypeText = formEl => {
+    const expectInputToBeOfTypeText = (formEl) => {
         expect(formEl).not.toBeNull();
         expect(formEl.tagName).toEqual('INPUT');
         expect(formEl.type).toEqual('text')
@@ -28,6 +28,67 @@ describe('CustomerForm', () => {
         });
     };
 
+    const itIncludesTheExistingValue = (fieldName, value) => {
+        it('includes the existing value', () => {
+            render(<CustomerForm {...{ [fieldName]: value }} />);
+            expect(field(fieldName).value).toEqual(value);
+        });
+    };
+
+    const itRendersALabel = (fieldName, label) => {
+        it('renders a label', () => {
+            render(<CustomerForm />);
+            expect(labelFor(fieldName)).not.toBeNull();
+            expect(labelFor(fieldName).textContent).toEqual(label);
+        });
+    };
+
+    const itAssignsAnIdThatMatchesLabelId = (fieldName, labelId) => {
+        it('assigns an id that matches the label id', () => {
+            render(<CustomerForm />);
+            expect(field(fieldName).id).toEqual(labelId);
+        });
+    };
+
+    const itSubmitsExistingValue = (fieldName, value) => {
+        it('saves the existing value when submitted', async () => {
+            expect.hasAssertions();
+
+            // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
+            // And Assert code is inside of onSubmit
+            render(
+                <CustomerForm
+                    {...{ [fieldName]: value }}
+                    onSubmit={(props) =>
+                        expect(props[fieldName]).toEqual(value)
+                    }
+                />
+            );
+            await ReactTestUtils.Simulate.submit(form('customer'));
+        });
+
+    };
+
+    const itSubmitsNewValue = (fieldName, value) => {
+        it('saves new value when submitted', async () => {
+            expect.hasAssertions();
+            render(
+                <CustomerForm
+                    {...{ fieldName: value }}
+                    onSubmit={(props) =>
+                        expect(props[fieldName]).toEqual(value)
+                    }
+                />
+            );
+
+            await ReactTestUtils.Simulate.change(field(fieldName), {
+                target: { value: value }
+            });
+
+            await ReactTestUtils.Simulate.submit(form('customer'));
+        });
+    };
+
     it('renders a form', () => {
         render(<CustomerForm />);
         expect(
@@ -37,56 +98,11 @@ describe('CustomerForm', () => {
 
     describe('first name field', () => {
         itRendersAsATextBox('firstName');
-
-        it('includes the existing value', () => {
-            render(<CustomerForm firstName="John" />);
-            expect(field('firstName').value).toEqual('John');
-        });
-
-        it('renders a label', () => {
-            render(<CustomerForm />);
-            expect(labelFor('firstName')).not.toBeNull();
-            expect(labelFor('firstName').textContent).toEqual('First Name');
-        });
-
-        it('assigns an id that matches the label id', () => {
-            render(<CustomerForm />);
-            expect(field('firstName').id).toEqual('firstName');
-        });
-
-        it('saves the existing value when submitted', async () => {
-            expect.hasAssertions();
-
-            // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
-            // And Assert code is inside of onSubmit
-            render(
-                <CustomerForm
-                    firstName="John"
-                    onSubmit={({ firstName }) =>
-                        expect(firstName).toEqual('John')
-                    }
-                />
-            );
-            await ReactTestUtils.Simulate.submit(form('customer'));
-        });
-
-        it('saves new value when submitted', async () => {
-            expect.hasAssertions();
-            render(
-                <CustomerForm
-                    firstName="John"
-                    onSubmit={({ firstName }) =>
-                        expect(firstName).toEqual('John')
-                    }
-                />
-            );
-
-            await ReactTestUtils.Simulate.change(field('firstName'), {
-                target: { value: 'John' }
-            });
-
-            await ReactTestUtils.Simulate.submit(form('customer'));
-        });
+        itIncludesTheExistingValue('firstName', 'John');
+        itRendersALabel('firstName', 'First Name');
+        itAssignsAnIdThatMatchesLabelId('firstName', 'firstName');
+        itSubmitsExistingValue('firstName', 'John');
+        itSubmitsNewValue('firstName', 'John');
     });
 
     describe('last name field', () => {
