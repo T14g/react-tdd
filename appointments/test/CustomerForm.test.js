@@ -7,7 +7,7 @@ describe('CustomerForm', () => {
     let render, container;
 
     const form = id => container.querySelector(`form[id="${id}"]`);
-    const firstNameField = () => form('customer').elements.firstName;
+    const field = name => form('customer').elements[name];
     const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
 
     beforeEach(() => {
@@ -21,6 +21,13 @@ describe('CustomerForm', () => {
         expect(formEl.type).toEqual('text')
     };
 
+    const itRendersAsATextBox = (fieldName) => {
+        it('renders as a text box', () => {
+            render(<CustomerForm />);
+            expectInputToBeOfTypeText(field(fieldName));
+        });
+    };
+
     it('renders a form', () => {
         render(<CustomerForm />);
         expect(
@@ -29,16 +36,12 @@ describe('CustomerForm', () => {
     });
 
     describe('first name field', () => {
-        it('renders as a text box', () => {
-            render(<CustomerForm />);
-            expectInputToBeOfTypeText(firstNameField());
-        });
+        itRendersAsATextBox('firstName');
 
         it('includes the existing value', () => {
             render(<CustomerForm firstName="John" />);
-            expect(firstNameField().value).toEqual('John');
+            expect(field('firstName').value).toEqual('John');
         });
-
 
         it('renders a label', () => {
             render(<CustomerForm />);
@@ -48,7 +51,7 @@ describe('CustomerForm', () => {
 
         it('assigns an id that matches the label id', () => {
             render(<CustomerForm />);
-            expect(firstNameField().id).toEqual('firstName');
+            expect(field('firstName').id).toEqual('firstName');
         });
 
         it('saves the existing value when submitted', async () => {
@@ -78,7 +81,7 @@ describe('CustomerForm', () => {
                 />
             );
 
-            await ReactTestUtils.Simulate.change(firstNameField(), {
+            await ReactTestUtils.Simulate.change(field('firstName'), {
                 target: { value: 'John' }
             });
 
