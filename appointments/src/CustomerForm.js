@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-export const CustomerForm = ({ firstName, lastName, onSubmit }) => {
-    const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName });
+export const CustomerForm = ({ firstName, lastName, phone, onSubmit }) => {
+    const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phone: phone });
 
     const handleChangeFirstName = ({ target }) => {
         setCustomer(customer => ({
@@ -14,6 +14,13 @@ export const CustomerForm = ({ firstName, lastName, onSubmit }) => {
         setCustomer(customer => ({
             ...customer,
             lastName: target.value
+        }));
+    };
+
+    const handleChangePhone = ({ target }) => {
+        setCustomer(customer => ({
+            ...customer,
+            phone: target.value
         }));
     };
 
@@ -35,6 +42,15 @@ export const CustomerForm = ({ firstName, lastName, onSubmit }) => {
                 value={lastName}
                 id="lastName"
                 onChange={handleChangeLastName}
+                readOnly
+            />
+            <label htmlFor="phone">Phone</label>
+            <input
+                type="text"
+                name="phone"
+                value={phone}
+                id="phone"
+                onChange={handleChangePhone}
                 readOnly
             />
         </form>

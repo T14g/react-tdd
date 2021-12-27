@@ -115,8 +115,12 @@ describe('CustomerForm', () => {
     });
 
     describe('phone number field', () => {
-        // ... tests ...
-
+        itRendersAsATextBox('phone');
+        itIncludesTheExistingValue('phone', '012345');
+        itRendersALabel('phone', 'Phone');
+        itAssignsAnIdThatMatchesLabelId('phone', 'phone');
+        itSubmitsExistingValue('phone', '012345');
+        itSubmitsNewValue('phone', '012345');
     });
 
 });
