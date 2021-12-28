@@ -82,7 +82,7 @@ describe('CustomerForm', () => {
             );
 
             await ReactTestUtils.Simulate.change(field(fieldName), {
-                target: { value: value }
+                target: { name: fieldName, value: value }
             });
 
             await ReactTestUtils.Simulate.submit(form('customer'));
