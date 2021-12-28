@@ -39,6 +39,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSubmit }) => {
                 onChange={handleChange}
                 readOnly
             />
+            <input type="submit" value="Add"/>
         </form>
     );
 };
