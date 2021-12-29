@@ -2,10 +2,12 @@ import React from "react";
 
 export const AppointmentForm = ({ selectableServices, service }) => (
     <form id="appointment" >
+        <label htmlFor="service">Service</label>
         <select
             name="service"
             value={service}
             readOnly
+            id="service"
         >
             <option />
             {

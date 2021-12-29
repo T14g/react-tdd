@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 
 import { AppointmentsDayView } from './AppointmentsDayView';
 import { CustomerForm } from './CustomerForm';
+import { AppointmentForm } from './AppointmentForm';
 import { sampleAppointments } from './sampleData';
 
 ReactDOM.render(
-    <CustomerForm />,
+    <AppointmentForm />,
     document.getElementById('root')
 );
