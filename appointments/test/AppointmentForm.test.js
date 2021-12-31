@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTestUtils from 'react-dom/test-utils';
 import { createContainer } from './domManipulators';
 import { AppointmentForm } from '../src/AppointmentForm';
 
@@ -83,6 +84,39 @@ describe('AppointmentForm', () => {
         it('assigns a id that matches label id', () => {
             render(<AppointmentForm />);
             expect(field('service').id).toEqual('service');
+        });
+
+        it('saves existing value when submitted', async () => {
+            expect.hasAssertions();
+
+            render(
+                <AppointmentForm
+                    {...{ ['service']: 'Cut' }}
+                    onSubmit={(props) =>
+                        expect(props['service']).toEqual('Cut')}
+                />
+            );
+
+            await ReactTestUtils.Simulate.submit(form('appointment'));
+        });
+
+        it('saves new value when submitted', async () => {
+            expect.hasAssertions();
+
+            render(
+                <AppointmentForm
+                    {...{ ['service']: 'Cut' }}
+                    onSubmit={(props) =>
+                        expect(props['service']).toEqual('Cut')}
+                />
+            );
+
+            await ReactTestUtils.Simulate.change(field('service'), {
+                target: { name: 'service', value: 'Cut' }
+            });
+
+            await ReactTestUtils.Simulate.submit(form('appointment'));
+
         });
     });
 
