@@ -121,3 +121,18 @@ describe('AppointmentForm', () => {
     });
 
 });
+
+describe('time slot table', () => {
+    let render, container;
+
+    beforeEach(() => {
+        ({ render, container } = createContainer());
+    });
+
+    it('renders a table for time slots', () => {
+        render(<AppointmentForm />);
+        expect(
+            container.querySelector('table#time-slots')
+        ).not.toBeNull();
+    });
+});
