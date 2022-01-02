@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TimeSlotTable } from '../src/TimeSlotTable';
 
-export const AppointmentForm = ({ selectableServices, service, onSubmit }) => {
+export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt, closeAt }) => {
     const [appointment, setAppointment] = useState({ service: service });
 
     const handleChange = ({ target }) => {
@@ -28,12 +28,17 @@ export const AppointmentForm = ({ selectableServices, service, onSubmit }) => {
                     ))
                 }
             </select>
-            <TimeSlotTable />
+            <TimeSlotTable
+                openAt={openAt}
+                closeAt={closeAt}
+            />
         </form>
     );
 }
 
 AppointmentForm.defaultProps = {
+    openAt: 9,
+    closeAt: 19,
     selectableServices: [
         'Cut',
         'Blow-dry',
@@ -42,3 +47,4 @@ AppointmentForm.defaultProps = {
         'Cut & beard trim',
         'Extensions']
 };
+
