@@ -14,13 +14,39 @@ const dailyTimeSlots = (salonOpensAt, salonClosesAt) => {
 const toTimeValue = timestamp =>
     new Date(timestamp).toTimeString().substring(0, 5);
 
-export const TimeSlotTable = ({ openAt, closeAt }) => {
+const weeklyDateValues = (startDate) => {
+    const midnight = new Date(startDate).setHours(0, 0, 0, 0);
+    const increment = 24 * 60 * 60 * 1000;
+    return Array(7)
+        .fill([midnight])
+        .reduce((acc, _, i) =>
+            acc.concat([midnight + (i * increment)])
+        );
+};
+
+const toShortDate = timestamp => {
+    const [day, , dayOfMonth] = new Date(timestamp)
+        .toDateString()
+        .split(' ');
+    return `${day} ${dayOfMonth}`;
+};
+
+export const TimeSlotTable = ({ openAt, closeAt, today }) => {
+    const dates = weeklyDateValues(today);
     const timeSlots = dailyTimeSlots(
         openAt,
         closeAt);
 
     return (
         <table id="time-slots">
+            <thead>
+                <tr>
+                    <th />
+                    {dates.map(d => (
+                        <th key={d}>{toShortDate(d)}</th>
+                    ))}
+                </tr>
+            </thead>
             <tbody>
                 {timeSlots.map(timeSlot => (
                     <tr key={timeSlot}>
