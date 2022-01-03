@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const timeIncrements = (numTimes, startTime, increment) =>
     Array(numTimes)
         .fill([startTime])
@@ -32,7 +31,17 @@ const toShortDate = timestamp => {
     return `${day} ${dayOfMonth}`;
 };
 
-export const TimeSlotTable = ({ openAt, closeAt, today }) => {
+const mergeDateAndTime = (date, timeSlot) => {
+    const time = new Date(timeSlot);
+    return new Date(date).setHours(
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds(),
+        time.getMilliseconds()
+    );
+};
+
+export const TimeSlotTable = ({ openAt, closeAt, today, availableTimeSlots }) => {
     const dates = weeklyDateValues(today);
     const timeSlots = dailyTimeSlots(
         openAt,
@@ -52,11 +61,17 @@ export const TimeSlotTable = ({ openAt, closeAt, today }) => {
                 {timeSlots.map(timeSlot => (
                     <tr key={timeSlot}>
                         <th>{toTimeValue(timeSlot)}</th>
-                        {dates.map(date => (
+                        {dates.map(date =>
                             <td key={date}>
-                                <input type="radio" />
+                                {availableTimeSlots.some(availableTimeSlot =>
+                                    availableTimeSlot.startsAt === mergeDateAndTime(date,
+                                        timeSlot)
+                                )
+                                    ? <input type="radio" />
+                                    : null
+                                }
                             </td>
-                        ))}
+                        )}
                     </tr>
                 ))}
             </tbody>
