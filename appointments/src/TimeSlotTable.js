@@ -41,6 +41,26 @@ const mergeDateAndTime = (date, timeSlot) => {
     );
 };
 
+const RadioButtonIfAvailable = ({
+    availableTimeSlots,
+    date,
+    timeSlot
+}) => {
+    const startsAt = mergeDateAndTime(date, timeSlot);
+    if (
+        availableTimeSlots.some(availableTimeSlot =>
+            availableTimeSlot.startsAt === startsAt
+        )
+    ) {
+        return (<input
+            name="startsAt"
+            type="radio"
+            value={startsAt}
+        />)
+    };
+    return null;
+};
+
 export const TimeSlotTable = ({ openAt, closeAt, today, availableTimeSlots }) => {
     const dates = weeklyDateValues(today);
     const timeSlots = dailyTimeSlots(
@@ -63,13 +83,11 @@ export const TimeSlotTable = ({ openAt, closeAt, today, availableTimeSlots }) =>
                         <th>{toTimeValue(timeSlot)}</th>
                         {dates.map(date =>
                             <td key={date}>
-                                {availableTimeSlots.some(availableTimeSlot =>
-                                    availableTimeSlot.startsAt === mergeDateAndTime(date,
-                                        timeSlot)
-                                )
-                                    ? <input type="radio" />
-                                    : null
-                                }
+                                <RadioButtonIfAvailable
+                                    availableTimeSlots={availableTimeSlots}
+                                    date={date}
+                                    timeSlot={timeSlot}
+                                />
                             </td>
                         )}
                     </tr>
