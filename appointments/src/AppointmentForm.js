@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TimeSlotTable } from '../src/TimeSlotTable';
 
-export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt, closeAt, today, availableTimeSlots }) => {
+export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt, closeAt, today, availableTimeSlots, startsAt }) => {
     const [appointment, setAppointment] = useState({ service: service });
 
     const handleChange = ({ target }) => {
@@ -33,12 +33,14 @@ export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt,
                 closeAt={closeAt}
                 today={today}
                 availableTimeSlots={availableTimeSlots}
+                checkedTimeSlot={startsAt}
             />
         </form>
     );
 }
 
 AppointmentForm.defaultProps = {
+    checkedTimeSlot : '',
     availableTimeSlots: [],
     today: new Date(),
     openAt: 9,
