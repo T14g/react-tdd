@@ -126,6 +126,7 @@ describe('time slot table', () => {
     let render, container;
     const timeSlotTable = () => container.querySelector('table#time-slots');
     const startsAtField = index => container.querySelectorAll(`input[name="startsAt"]`)[index];
+    const form = id => container.querySelector(`form[id="${id}"]`);
 
     beforeEach(() => {
         ({ render, container } = createContainer());
@@ -210,7 +211,6 @@ describe('time slot table', () => {
             { startsAt: today.setHours(9, 30, 0, 0) }
         ];
 
-
         render(
             <AppointmentForm
                 availableTimeSlots={availableTimeSlots}
@@ -220,5 +220,29 @@ describe('time slot table', () => {
         );
 
         expect(startsAtField(0).checked).toEqual(true);
+    });
+
+    it(('should save existing value when submitted'), async () => {
+        expect.hasAssertions();
+
+        const today = new Date();
+
+        const availableTimeSlots = [
+            { startsAt: today.setHours(9, 0, 0, 0) },
+            { startsAt: today.setHours(9, 30, 0, 0) }
+        ];
+
+        render(
+            <AppointmentForm
+                {...{ ['startsAt']: '09:00' }}
+                availableTimeSlots={availableTimeSlots}
+                today={today}
+                startsAt={availableTimeSlots[0].startsAt}
+                onSubmit={(props) =>
+                    expect(props['startsAt'].value).toEqual('09:00')}
+            />
+        );
+
+        await ReactTestUtils.Simulate.submit(form('appointment'));
     });
 });
