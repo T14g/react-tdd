@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { TimeSlotTable } from '../src/TimeSlotTable';
 
 export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt, closeAt, today, availableTimeSlots, startsAt }) => {
@@ -10,6 +10,15 @@ export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt,
             [target.name]: target.value
         }));
     };
+
+    const handleStartsAtChange = useCallback(
+        ({ target: { value } }) =>
+            setAppointment(appointment => ({
+                ...appointment,
+                startsAt: parseInt(value)
+            })),
+        []
+    );
 
     return (
         <form id="appointment" onSubmit={() => onSubmit(appointment)} >
@@ -34,13 +43,14 @@ export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt,
                 today={today}
                 availableTimeSlots={availableTimeSlots}
                 checkedTimeSlot={startsAt}
+                handleChange={handleStartsAtChange}
             />
         </form>
     );
 }
 
 AppointmentForm.defaultProps = {
-    checkedTimeSlot : '',
+    checkedTimeSlot: '',
     availableTimeSlots: [],
     today: new Date(),
     openAt: 9,

@@ -45,7 +45,8 @@ const RadioButtonIfAvailable = ({
     availableTimeSlots,
     date,
     timeSlot,
-    checkedTimeSlot
+    checkedTimeSlot,
+    handleChange
 }) => {
     const startsAt = mergeDateAndTime(date, timeSlot);
 
@@ -62,13 +63,13 @@ const RadioButtonIfAvailable = ({
             type="radio"
             value={startsAt}
             checked={isChecked}
-            readOnly
+            onChange={handleChange}
         />)
     };
     return null;
 };
 
-export const TimeSlotTable = ({ openAt, closeAt, today, availableTimeSlots, checkedTimeSlot }) => {
+export const TimeSlotTable = ({ openAt, closeAt, today, availableTimeSlots, checkedTimeSlot, handleChange }) => {
     const dates = weeklyDateValues(today);
     const timeSlots = dailyTimeSlots(
         openAt,
@@ -95,6 +96,7 @@ export const TimeSlotTable = ({ openAt, closeAt, today, availableTimeSlots, chec
                                     date={date}
                                     timeSlot={timeSlot}
                                     checkedTimeSlot={checkedTimeSlot}
+                                    handleChange={handleChange}
                                 />
                             </td>
                         )}
