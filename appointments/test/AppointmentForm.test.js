@@ -234,12 +234,11 @@ describe('time slot table', () => {
 
         render(
             <AppointmentForm
-                {...{ ['startsAt']: '09:00' }}
                 availableTimeSlots={availableTimeSlots}
                 today={today}
                 startsAt={availableTimeSlots[0].startsAt}
-                onSubmit={(props) =>
-                    expect(props['startsAt'].value).toEqual('09:00')}
+                onSubmit={() =>
+                    expect(startsAtField(0).checked).toEqual(true)}
             />
         );
 

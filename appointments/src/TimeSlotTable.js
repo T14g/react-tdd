@@ -55,7 +55,6 @@ const RadioButtonIfAvailable = ({
         )
     ) {
 
-
         const isChecked = startsAt === checkedTimeSlot;
 
         return (<input
