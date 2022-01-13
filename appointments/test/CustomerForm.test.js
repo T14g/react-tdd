@@ -52,19 +52,19 @@ describe('CustomerForm', () => {
 
     const itSubmitsExistingValue = (fieldName, value) => {
         it('saves the existing value when submitted', async () => {
-            expect.hasAssertions();
+            let submitArg;
 
             // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
             // And Assert code is inside of onSubmit
             render(
                 <CustomerForm
                     {...{ [fieldName]: value }}
-                    onSubmit={(props) =>
-                        expect(props[fieldName]).toEqual(value)
-                    }
+                    onSubmit={customer => submitArg = customer}
                 />
             );
-            await ReactTestUtils.Simulate.submit(form('customer'));
+            ReactTestUtils.Simulate.submit(form('customer'));
+
+            expect(submitArg[fieldName]).toEqual(value);
         });
 
     };
