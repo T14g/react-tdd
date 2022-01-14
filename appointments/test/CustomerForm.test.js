@@ -10,6 +10,15 @@ describe('CustomerForm', () => {
     const field = name => form('customer').elements[name];
     const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
 
+    const spy = () => {
+        let receivedArguments;
+        return {
+            fn: (...args) => ( receivedArguments = args ),
+            receivedArguments: () => receivedArguments,
+            receivedArgument: n => receivedArguments[n]
+        };
+    };
+
     beforeEach(() => {
         // This function is executed imediatly IIFE
         ({ render, container } = createContainer());
@@ -52,19 +61,19 @@ describe('CustomerForm', () => {
 
     const itSubmitsExistingValue = (fieldName, value) => {
         it('saves the existing value when submitted', async () => {
-            let submitArg;
+            let submitSpy = spy();
 
             // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
             // And Assert code is inside of onSubmit
             render(
                 <CustomerForm
                     {...{ [fieldName]: value }}
-                    onSubmit={customer => submitArg = customer}
+                    onSubmit={submitSpy.fn}
                 />
             );
             ReactTestUtils.Simulate.submit(form('customer'));
-
-            expect(submitArg[fieldName]).toEqual(value);
+            expect(submitSpy.receivedArguments()).toBeDefined();
+            expect(submitSpy.receivedArgument(0)[fieldName]).toEqual(value);
         });
 
     };
