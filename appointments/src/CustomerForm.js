@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const CustomerForm = ({ firstName, lastName, phone, onSubmit, fetch }) => {
+export const CustomerForm = ({ firstName, lastName, phone, fetch }) => {
     const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phone: phone });
 
     const handleChange = ({ target }) => {
@@ -11,7 +11,6 @@ export const CustomerForm = ({ firstName, lastName, phone, onSubmit, fetch }) =>
     };
 
     const handleSubmit = () => {
-        onSubmit(customer);
         fetch('/customers', {
             method: 'POST',
             credentials: 'same-origin',

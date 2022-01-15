@@ -83,7 +83,6 @@ describe('CustomerForm', () => {
                 <CustomerForm
                     {...{ [fieldName]: value }}
                     fetch={fetchSpy.fn}
-                    onSubmit={() => { }}
                 />
             );
             ReactTestUtils.Simulate.submit(form('customer'));
@@ -96,13 +95,12 @@ describe('CustomerForm', () => {
 
     const itSubmitsNewValue = (fieldName, value) => {
         it('saves new value when submitted', async () => {
-            expect.hasAssertions();
+            const fetchSpy = spy();
+
             render(
                 <CustomerForm
                     {...{ fieldName: value }}
-                    onSubmit={(props) =>
-                        expect(props[fieldName]).toEqual(value)
-                    }
+                    fetch={fetchSpy.fn}
                 />
             );
 
@@ -111,6 +109,9 @@ describe('CustomerForm', () => {
             });
 
             await ReactTestUtils.Simulate.submit(form('customer'));
+
+            const fetchOpts = fetchSpy.receivedArgument(1);
+            expect(JSON.parse(fetchOpts.body)[fieldName]).toEqual(value);
         });
     };
 
