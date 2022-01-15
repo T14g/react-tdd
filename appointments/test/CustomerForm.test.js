@@ -71,21 +71,25 @@ describe('CustomerForm', () => {
         });
     };
 
+    // Thats is a test generator 
     const itSubmitsExistingValue = (fieldName, value) => {
         it('saves the existing value when submitted', async () => {
-            let submitSpy = spy();
+            // Arrange (mock,spy)
+            let fetchSpy = spy();
 
             // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
             // And Assert code is inside of onSubmit
             render(
                 <CustomerForm
                     {...{ [fieldName]: value }}
-                    onSubmit={submitSpy.fn}
+                    fetch={fetchSpy.fn}
+                    onSubmit={() => { }}
                 />
             );
             ReactTestUtils.Simulate.submit(form('customer'));
-            expect(submitSpy).toHaveBeenCalled();
-            expect(submitSpy.receivedArgument(0)[fieldName]).toEqual(value);
+
+            const fetchOpts = fetchSpy.receivedArgument(1);
+            expect(JSON.parse(fetchOpts.body)[fieldName]).toEqual(value);
         });
 
     };
