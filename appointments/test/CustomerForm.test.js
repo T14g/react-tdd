@@ -13,7 +13,7 @@ describe('CustomerForm', () => {
     const spy = () => {
         let receivedArguments;
         return {
-            fn: (...args) => ( receivedArguments = args ),
+            fn: (...args) => (receivedArguments = args),
             receivedArguments: () => receivedArguments,
             receivedArgument: n => receivedArguments[n]
         };
@@ -21,13 +21,13 @@ describe('CustomerForm', () => {
 
     expect.extend({
         toHaveBeenCalled(received) {
-            if(received.receivedArguments() === undefined) {
+            if (received.receivedArguments() === undefined) {
                 return {
                     pass: false,
                     message: () => 'Spy was not called.'
                 }
             }
-            return { pass: true, message : () => 'Spy was called.'};
+            return { pass: true, message: () => 'Spy was called.' };
         }
     });
 
@@ -148,5 +148,23 @@ describe('CustomerForm', () => {
         render(<CustomerForm />);
         const submitButton = container.querySelector('input[type="submit"]');
         expect(submitButton).not.toBeNull();
+    });
+
+    it(('calls fetch with the right properties when submitting data'), async () => {
+        const fetchSpy = spy();
+        render(
+            <CustomerForm fetch={fetchSpy.fn} onSubmit={() => { }} />
+        );
+
+        ReactTestUtils.Simulate.submit(form('customer'));
+        expect(fetchSpy).toHaveBeenCalled();
+        expect(fetchSpy.receivedArgument(0)).toEqual('/customers');
+        const fetchOpts = fetchSpy.receivedArgument(1);
+        expect(fetchOpts.method).toEqual('POST');
+        expect(fetchOpts.credentials).toEqual('same-origin');
+        expect(fetchOpts.headers).toEqual({
+            'Content-Type': 'application/json'
+        });
+
     });
 });
