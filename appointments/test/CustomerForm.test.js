@@ -86,7 +86,6 @@ describe('CustomerForm', () => {
             render(
                 <CustomerForm
                     {...{ [fieldName]: value }}
-                    fetch={fetchSpy.fn}
                 />
             );
             ReactTestUtils.Simulate.submit(form('customer'));
@@ -103,7 +102,6 @@ describe('CustomerForm', () => {
             render(
                 <CustomerForm
                     {...{ fieldName: value }}
-                    fetch={fetchSpy.fn}
                 />
             );
 
@@ -160,7 +158,7 @@ describe('CustomerForm', () => {
 
     it(('calls fetch with the right properties when submitting data'), async () => {
         render(
-            <CustomerForm fetch={fetchSpy.fn} onSubmit={() => { }} />
+            <CustomerForm onSubmit={() => { }} />
         );
 
         ReactTestUtils.Simulate.submit(form('customer'));
