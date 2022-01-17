@@ -4,7 +4,8 @@ import { createContainer } from "./domManipulators";
 import { CustomerForm } from '../src/CustomerForm';
 
 describe('CustomerForm', () => {
-    let render, container;
+    let render, container, fetchSpy;
+    const originalFetch = window.fetch;
 
     const form = id => container.querySelector(`form[id="${id}"]`);
     const field = name => form('customer').elements[name];
@@ -34,6 +35,13 @@ describe('CustomerForm', () => {
     beforeEach(() => {
         // This function is executed imediatly IIFE
         ({ render, container } = createContainer());
+        fetchSpy = spy();
+        window.fetch = fetchSpy.fn;
+    });
+
+    afterEach(() => {
+        // reset window.fetch global variable
+        window.fetch = originalFetch;
     });
 
     const expectInputToBeOfTypeText = (formEl) => {
@@ -74,11 +82,7 @@ describe('CustomerForm', () => {
     // Thats is a test generator 
     const itSubmitsExistingValue = (fieldName, value) => {
         it('saves the existing value when submitted', async () => {
-            // Arrange (mock,spy)
-            let fetchSpy = spy();
 
-            // This is a mix of Arrange and Assert, in this case render is the phase of Arrange
-            // And Assert code is inside of onSubmit
             render(
                 <CustomerForm
                     {...{ [fieldName]: value }}
@@ -95,7 +99,6 @@ describe('CustomerForm', () => {
 
     const itSubmitsNewValue = (fieldName, value) => {
         it('saves new value when submitted', async () => {
-            const fetchSpy = spy();
 
             render(
                 <CustomerForm
@@ -156,7 +159,6 @@ describe('CustomerForm', () => {
     });
 
     it(('calls fetch with the right properties when submitting data'), async () => {
-        const fetchSpy = spy();
         render(
             <CustomerForm fetch={fetchSpy.fn} onSubmit={() => { }} />
         );
