@@ -33,7 +33,6 @@ describe('CustomerForm', () => {
     });
 
     beforeEach(() => {
-        // This function is executed imediatly IIFE
         ({ render, container } = createContainer());
         fetchSpy = spy();
         window.fetch = fetchSpy.fn;
