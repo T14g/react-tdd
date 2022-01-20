@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const CustomerForm = ({ firstName, lastName, phone }) => {
+export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phone: phone });
 
     const handleChange = ({ target }) => {
@@ -10,13 +10,16 @@ export const CustomerForm = ({ firstName, lastName, phone }) => {
         }));
     };
 
-    const handleSubmit = () => {
-        window.fetch('/customers', {
+    const handleSubmit = async () => {
+        const result = await window.fetch('/customers', {
             method: 'POST',
             credentials: 'same-origin',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(customer)
         });
+
+        const customerWithId = await result.json();
+        onSave(customerWithId);
     };
 
     return (
@@ -51,4 +54,8 @@ export const CustomerForm = ({ firstName, lastName, phone }) => {
             <input type="submit" value="Add" />
         </form>
     );
+};
+
+CustomerForm.defaultProps = {
+    onSave: () => { }
 };
