@@ -10,7 +10,9 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
         }));
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async e => {
+        e.preventDefault();
+        
         const result = await window.fetch('/customers', {
             method: 'POST',
             credentials: 'same-origin',
