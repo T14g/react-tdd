@@ -31,6 +31,9 @@ describe('CustomerForm', () => {
             json: () => Promise.resolve(body)
         });
 
+    const fetchResponseError = () =>
+        Promise.resolve({ ok: false });
+
     expect.extend({
         toHaveBeenCalled(received) {
             if (received.receivedArguments() === undefined) {
@@ -196,4 +199,14 @@ describe('CustomerForm', () => {
         expect(saveSpy.receivedArgument(0)).toEqual(customer);
     });
 
+    it('does not notify onSave if the POST request returns an error',
+        async () => {
+            fetchSpy.stubReturnValue(fetchResponseError());
+            const saveSpy = spy();
+            render(<CustomerForm onSave={saveSpy.fn} />);
+            await act(async () => {
+                ReactTestUtils.Simulate.submit(form('customer'));
+            });
+            expect(saveSpy).not.toHaveBeenCalled();
+        });
 });

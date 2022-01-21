@@ -18,8 +18,10 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
             body: JSON.stringify(customer)
         });
 
-        const customerWithId = await result.json();
-        onSave(customerWithId);
+        if (result.ok) {
+            const customerWithId = await result.json();
+            onSave(customerWithId);
+        }
     };
 
     return (
