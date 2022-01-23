@@ -21,7 +21,7 @@ describe('CustomerForm', () => {
             },
             receivedArguments: () => receivedArguments,
             receivedArgument: n => receivedArguments[n],
-            stubReturnValue: value => returnValue = value
+            mockReturnValue: value => returnValue = value
         };
     };
 
@@ -34,23 +34,10 @@ describe('CustomerForm', () => {
     const fetchResponseError = () =>
         Promise.resolve({ ok: false });
 
-    expect.extend({
-        toHaveBeenCalled(received) {
-            if (received.receivedArguments() === undefined) {
-                return {
-                    pass: false,
-                    message: () => 'Spy was not called.'
-                }
-            }
-            return { pass: true, message: () => 'Spy was called.' };
-        }
-    });
-
     beforeEach(() => {
         ({ render, container } = createContainer());
-        fetchSpy = spy();
-        window.fetch = fetchSpy.fn;
-        fetchSpy.stubReturnValue(fetchResponseOk({}));
+        fetchSpy = jest.fn(()=> fetchResponseOk({}))
+        window.fetch = fetchSpy;
     });
 
     afterEach(() => {
@@ -189,7 +176,7 @@ describe('CustomerForm', () => {
 
     it('notifies onSave when form is submitted', async () => {
         const customer = { id: 123 };
-        fetchSpy.stubReturnValue(fetchResponseOk(customer));
+        fetchSpy.mockReturnValue(fetchResponseOk(customer));
         const saveSpy = spy();
         render(<CustomerForm onSave={saveSpy.fn} />);
         await act(async () => {
@@ -201,7 +188,7 @@ describe('CustomerForm', () => {
 
     it('does not notify onSave if the POST request returns an error',
         async () => {
-            fetchSpy.stubReturnValue(fetchResponseError());
+            fetchSpy.mockReturnValue(fetchResponseError());
             const saveSpy = spy();
             render(<CustomerForm onSave={saveSpy.fn} />);
             await act(async () => {
@@ -211,13 +198,27 @@ describe('CustomerForm', () => {
         });
 
     it('prevents the default action when submitting the form', async () => {
-        const preventDefaultSpy = spy();
+        const preventDefaultSpy = jest.fn();
+
         render(<CustomerForm />);
         await act(async () => {
             ReactTestUtils.Simulate.submit(form('customer'), {
-                preventDefault: preventDefaultSpy.fn
+                preventDefault: preventDefaultSpy
             });
         });
         expect(preventDefaultSpy).toHaveBeenCalled();
+    });
+
+    it(('renders error message when fetch call fails'), async () => {
+        fetchSpy.mockReturnValue(Promise.resolve({ ok: false }));
+
+        render(<CustomerForm />);
+        await act(async () => {
+            ReactTestUtils.Simulate.submit(form('customer'));
+        });
+
+        const errorElement = container.querySelector('.error');
+        expect(errorElement).not.toBeNull();
+        expect(errorElement.textContent).toMatch('error occurred');
     });
 });
