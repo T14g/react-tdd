@@ -11,6 +11,9 @@ describe('CustomerForm', () => {
     const field = name => form('customer').elements[name];
     const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
 
+    const fetchRequestBody = () =>
+        JSON.parse(fetchSpy.mock.calls[0][1].body);
+
     const spy = () => {
         let receivedArguments, returnValue;
 
@@ -36,7 +39,7 @@ describe('CustomerForm', () => {
 
     beforeEach(() => {
         ({ render, container } = createContainer());
-        fetchSpy = jest.fn(()=> fetchResponseOk({}))
+        fetchSpy = jest.fn(() => fetchResponseOk({}))
         window.fetch = fetchSpy;
     });
 
@@ -91,8 +94,9 @@ describe('CustomerForm', () => {
             );
             ReactTestUtils.Simulate.submit(form('customer'));
 
-            const fetchOpts = fetchSpy.receivedArgument(1);
-            expect(JSON.parse(fetchOpts.body)[fieldName]).toEqual(value);
+            expect(fetchRequestBody()).toMatchObject({
+                [fieldName] : value
+            });
         });
 
     };
@@ -112,8 +116,9 @@ describe('CustomerForm', () => {
 
             await ReactTestUtils.Simulate.submit(form('customer'));
 
-            const fetchOpts = fetchSpy.receivedArgument(1);
-            expect(JSON.parse(fetchOpts.body)[fieldName]).toEqual(value);
+            expect(fetchRequestBody()).toMatchObject({
+                [fieldName] : value
+            });
         });
     };
 
@@ -163,34 +168,32 @@ describe('CustomerForm', () => {
         );
 
         ReactTestUtils.Simulate.submit(form('customer'));
-        expect(fetchSpy).toHaveBeenCalled();
-        expect(fetchSpy.receivedArgument(0)).toEqual('/customers');
-        const fetchOpts = fetchSpy.receivedArgument(1);
-        expect(fetchOpts.method).toEqual('POST');
-        expect(fetchOpts.credentials).toEqual('same-origin');
-        expect(fetchOpts.headers).toEqual({
-            'Content-Type': 'application/json'
-        });
 
+        expect(fetchSpy).toHaveBeenCalledWith(
+            '/customers',
+            expect.objectContaining({
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' }
+            }));
     });
 
     it('notifies onSave when form is submitted', async () => {
         const customer = { id: 123 };
         fetchSpy.mockReturnValue(fetchResponseOk(customer));
-        const saveSpy = spy();
-        render(<CustomerForm onSave={saveSpy.fn} />);
+        const saveSpy = jest.fn();
+        render(<CustomerForm onSave={saveSpy} />);
         await act(async () => {
             ReactTestUtils.Simulate.submit(form('customer'));
         });
-        expect(saveSpy).toHaveBeenCalled();
-        expect(saveSpy.receivedArgument(0)).toEqual(customer);
+        expect(saveSpy).toHaveBeenCalledWith(customer);
     });
 
     it('does not notify onSave if the POST request returns an error',
         async () => {
             fetchSpy.mockReturnValue(fetchResponseError());
-            const saveSpy = spy();
-            render(<CustomerForm onSave={saveSpy.fn} />);
+            const saveSpy = jest.fn();
+            render(<CustomerForm onSave={saveSpy} />);
             await act(async () => {
                 ReactTestUtils.Simulate.submit(form('customer'));
             });
