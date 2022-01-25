@@ -3,11 +3,10 @@ import ReactTestUtils, { act } from 'react-dom/test-utils';
 import { createContainer } from "./domManipulators";
 import { CustomerForm } from '../src/CustomerForm';
 import { fetchResponseOk, fetchResponseError, requestBodyOf } from './spyHelpers';
+import 'whatwg-fetch';
 
 describe('CustomerForm', () => {
-    let render, container, fetchSpy;
-    const originalFetch = window.fetch;
-
+    let render, container;
     const form = id => container.querySelector(`form[id="${id}"]`);
     const field = name => form('customer').elements[name];
     const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
@@ -28,13 +27,13 @@ describe('CustomerForm', () => {
 
     beforeEach(() => {
         ({ render, container } = createContainer());
-        fetchSpy = jest.fn(() => fetchResponseOk({}))
-        window.fetch = fetchSpy;
+        jest
+            .spyOn(window, 'fetch')
+            .mockReturnValue(fetchResponseOk({}));
     });
 
     afterEach(() => {
-        // reset window.fetch global variable
-        window.fetch = originalFetch;
+        window.fetch.mockRestore();
     });
 
     const expectInputToBeOfTypeText = (formEl) => {
@@ -83,8 +82,8 @@ describe('CustomerForm', () => {
             );
             ReactTestUtils.Simulate.submit(form('customer'));
 
-            expect(requestBodyOf(fetchSpy)).toMatchObject({
-                [fieldName] : value
+            expect(requestBodyOf(window.fetch)).toMatchObject({
+                [fieldName]: value
             });
         });
 
@@ -105,8 +104,8 @@ describe('CustomerForm', () => {
 
             await ReactTestUtils.Simulate.submit(form('customer'));
 
-            expect(requestBodyOf(fetchSpy)).toMatchObject({
-                [fieldName] : value
+            expect(requestBodyOf(window.fetch)).toMatchObject({
+                [fieldName]: value
             });
         });
     };
@@ -158,7 +157,7 @@ describe('CustomerForm', () => {
 
         ReactTestUtils.Simulate.submit(form('customer'));
 
-        expect(fetchSpy).toHaveBeenCalledWith(
+        expect(window.fetch).toHaveBeenCalledWith(
             '/customers',
             expect.objectContaining({
                 method: 'POST',
@@ -169,7 +168,7 @@ describe('CustomerForm', () => {
 
     it('notifies onSave when form is submitted', async () => {
         const customer = { id: 123 };
-        fetchSpy.mockReturnValue(fetchResponseOk(customer));
+        window.fetch.mockReturnValue(fetchResponseOk(customer));
         const saveSpy = jest.fn();
         render(<CustomerForm onSave={saveSpy} />);
         await act(async () => {
@@ -180,7 +179,7 @@ describe('CustomerForm', () => {
 
     it('does not notify onSave if the POST request returns an error',
         async () => {
-            fetchSpy.mockReturnValue(fetchResponseError());
+            window.fetch.mockReturnValue(fetchResponseError());
             const saveSpy = jest.fn();
             render(<CustomerForm onSave={saveSpy} />);
             await act(async () => {
@@ -202,7 +201,7 @@ describe('CustomerForm', () => {
     });
 
     it(('renders error message when fetch call fails'), async () => {
-        fetchSpy.mockReturnValue(Promise.resolve({ ok: false }));
+        window.fetch.mockReturnValue(Promise.resolve({ ok: false }));
 
         render(<CustomerForm />);
         await act(async () => {
