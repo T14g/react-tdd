@@ -6,10 +6,7 @@ import { fetchResponseOk, fetchResponseError, requestBodyOf } from './spyHelpers
 import 'whatwg-fetch';
 
 describe('CustomerForm', () => {
-    let render, container;
-    const form = id => container.querySelector(`form[id="${id}"]`);
-    const field = name => form('customer').elements[name];
-    const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
+    let render, container, form, field, labelFor, element;
 
     const spy = () => {
         let receivedArguments, returnValue;
@@ -26,7 +23,7 @@ describe('CustomerForm', () => {
     };
 
     beforeEach(() => {
-        ({ render, container } = createContainer());
+        ({ render, container, form, field, labelFor, element } = createContainer());
         jest
             .spyOn(window, 'fetch')
             .mockReturnValue(fetchResponseOk({}));
@@ -45,14 +42,14 @@ describe('CustomerForm', () => {
     const itRendersAsATextBox = (fieldName) => {
         it('renders as a text box', () => {
             render(<CustomerForm />);
-            expectInputToBeOfTypeText(field(fieldName));
+            expectInputToBeOfTypeText(field('customer', fieldName));
         });
     };
 
     const itIncludesTheExistingValue = (fieldName, value) => {
         it('includes the existing value', () => {
             render(<CustomerForm {...{ [fieldName]: value }} />);
-            expect(field(fieldName).value).toEqual(value);
+            expect(field('customer', fieldName).value).toEqual(value);
         });
     };
 
@@ -67,7 +64,7 @@ describe('CustomerForm', () => {
     const itAssignsAnIdThatMatchesLabelId = (fieldName, labelId) => {
         it('assigns an id that matches the label id', () => {
             render(<CustomerForm />);
-            expect(field(fieldName).id).toEqual(labelId);
+            expect(field('customer', fieldName).id).toEqual(labelId);
         });
     };
 
@@ -98,7 +95,7 @@ describe('CustomerForm', () => {
                 />
             );
 
-            await ReactTestUtils.Simulate.change(field(fieldName), {
+            await ReactTestUtils.Simulate.change(field('customer', fieldName), {
                 target: { name: fieldName, value: value }
             });
 
@@ -146,7 +143,7 @@ describe('CustomerForm', () => {
 
     it('has a submit button', () => {
         render(<CustomerForm />);
-        const submitButton = container.querySelector('input[type="submit"]');
+        const submitButton = element('input[type="submit"]');
         expect(submitButton).not.toBeNull();
     });
 
@@ -208,7 +205,7 @@ describe('CustomerForm', () => {
             ReactTestUtils.Simulate.submit(form('customer'));
         });
 
-        const errorElement = container.querySelector('.error');
+        const errorElement = element('.error');
         expect(errorElement).not.toBeNull();
         expect(errorElement.textContent).toMatch('error occurred');
     });
