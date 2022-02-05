@@ -1,7 +1,15 @@
 import React, { useState, useCallback } from "react";
 import { TimeSlotTable } from '../src/TimeSlotTable';
 
-export const AppointmentForm = ({ selectableServices, service, onSubmit, openAt, closeAt, today, availableTimeSlots, startsAt }) => {
+export const AppointmentForm = ({
+    selectableServices,
+    service,
+    onSubmit,
+    openAt,
+    closeAt,
+    today,
+    availableTimeSlots,
+    startsAt }) => {
     const [appointment, setAppointment] = useState({ service: service });
 
     const handleChange = ({ target }) => {

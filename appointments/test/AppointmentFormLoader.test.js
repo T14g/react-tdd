@@ -10,13 +10,13 @@ import {
 } from '../src/AppointmentFormLoader';
 
 describe('AppointmentFormLoader', () => {
-    let render, container;
+    let render, renderAndWait, container;
     const today = new Date();
     const availableTimeSlots = [{ startsAt: today.setHours(9, 0, 0, 0) }
     ];
 
     beforeEach(() => {
-        ({ render, container } = createContainer());
+        ({ render, container, renderAndWait } = createContainer());
         jest
             .spyOn(window, 'fetch')
             .mockReturnValue(fetchResponseOk(availableTimeSlots));
@@ -44,10 +44,23 @@ describe('AppointmentFormLoader', () => {
 
     it('initially passes no data to AppointmentForm', () => {
         render(<AppointmentFormLoader />);
+
         expect(
             AppointmentFormExports.AppointmentForm
         ).toHaveBeenCalledWith(
             { availableTimeSlots: [] },
+            expect.anything()
+        );
+    });
+
+    it('displays time slots that are fetched on mount', async () => {
+        await renderAndWait(<AppointmentFormLoader />);
+        expect(
+            AppointmentFormExports.AppointmentForm
+        ).toHaveBeenLastCalledWith(
+            {
+                availableTimeSlots
+            },
             expect.anything()
         );
     });
