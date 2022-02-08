@@ -16,7 +16,7 @@ export const AppointmentsDayViewLoader = ({ today }) => {
             });
         };
         fetchAppointments();
-    }, [from, to]);
+    }, [from, to, today]);
     
     return null;
 };
