@@ -31,6 +31,17 @@ describe('AppointmentsDayViewLoader', () => {
         AppointmentsDayViewExports.AppointmentsDayView.mockRestore();
     });
 
+    it('initially passes no data to AppointmentsDayView', async () => {
+        await renderAndWait(<AppointmentsDayViewLoader />);
+        expect(
+            AppointmentsDayViewExports.AppointmentsDayView
+        ).toHaveBeenCalledWith(
+            { appointments: [] },
+            expect.anything()
+        );
+    });
+
+
     it('fetches appointments happening today when component is mounted', async () => {
         const from = today.setHours(0, 0, 0, 0);
         const to = today.setHours(23, 59, 59, 999);
@@ -64,5 +75,10 @@ describe('AppointmentsDayViewLoader', () => {
             expect.anything());
     });
 
+    it('calls window.fetch just once', async () => {
+        await renderAndWait(<AppointmentsDayViewLoader />);
+        await renderAndWait(<AppointmentsDayViewLoader />);
+        expect(window.fetch.mock.calls.length).toBe(1);
+    });
 });
 
