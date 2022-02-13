@@ -4,10 +4,10 @@ import { createContainer } from './domManipulators';
 import { AppointmentForm } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
-    let render, container;
+    let render, container, submit;
 
     beforeEach(() => {
-        ({ render, container } = createContainer());
+        ({ render, container, submit } = createContainer());
     });
 
     const form = id => container.querySelector(`form[id="${id}"]`);
@@ -120,6 +120,15 @@ describe('AppointmentForm', () => {
         });
     });
 
+    it('passes the customer id to fetch when submitting', async () => {
+        const customer = { id: 123 };
+        render(<AppointmentForm customer={customer} />);
+        await submit(form('appointment'));
+        expect(requestBodyOf(window.fetch)).toMatchObject({
+            ...appointment,
+            customer: customer.id
+        });
+    });
 });
 
 describe('time slot table', () => {
