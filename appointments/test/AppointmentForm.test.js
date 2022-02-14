@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import { createContainer } from './domManipulators';
+import { requestBodyOf } from './spyHelpers';
 import { AppointmentForm } from '../src/AppointmentForm';
 
 describe('AppointmentForm', () => {
+    const customer = { id: 123 };
     let render, container, submit;
 
     beforeEach(() => {
@@ -121,7 +123,6 @@ describe('AppointmentForm', () => {
     });
 
     it('passes the customer id to fetch when submitting', async () => {
-        const customer = { id: 123 };
         render(<AppointmentForm customer={customer} />);
         await submit(form('appointment'));
         expect(requestBodyOf(window.fetch)).toMatchObject({

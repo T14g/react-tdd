@@ -44,7 +44,7 @@ export const AppointmentForm = ({
     };
 
     return (
-        <form id="appointment" onSubmit={handleSubmit} >
+        <form id="appointment" onSubmit={() => onSubmit(appointment)} >
             <label htmlFor="service">Service</label>
             <select
                 name="service"
