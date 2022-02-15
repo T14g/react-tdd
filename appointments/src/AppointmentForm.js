@@ -5,7 +5,7 @@ export const AppointmentForm = ({
     customer,
     selectableServices,
     service,
-    onSubmit,
+    onSave,
     openAt,
     closeAt,
     today,
@@ -31,7 +31,7 @@ export const AppointmentForm = ({
 
     const handleSubmit = async e => {
         e.preventDefault();
-
+        
         const result = await window.fetch('/appointments', {
             method: 'POST',
             credentials: 'same-origin',
@@ -41,10 +41,17 @@ export const AppointmentForm = ({
                 customer: customer.id
             })
         });
+
+        if (result.ok) {
+            const customerWithId = await result.json();
+            onSave(customerWithId);
+        } else {
+            setError(true);
+        }
     };
 
     return (
-        <form id="appointment" onSubmit={() => onSubmit(appointment)} >
+        <form id="appointment" onSubmit={handleSubmit} >
             <label htmlFor="service">Service</label>
             <select
                 name="service"
@@ -77,6 +84,7 @@ AppointmentForm.defaultProps = {
     availableTimeSlots: [],
     today: new Date(),
     openAt: 9,
+    onSave: () => { },
     closeAt: 19,
     selectableServices: [
         'Cut',

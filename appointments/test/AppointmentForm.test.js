@@ -1,15 +1,24 @@
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import { createContainer } from './domManipulators';
-import { requestBodyOf } from './spyHelpers';
+import { requestBodyOf, fetchResponseOk } from './spyHelpers';
 import { AppointmentForm } from '../src/AppointmentForm';
+import 'whatwg-fetch';
+
+const customer = { id: 123 };
 
 describe('AppointmentForm', () => {
-    const customer = { id: 123 };
     let render, container, submit;
 
     beforeEach(() => {
         ({ render, container, submit } = createContainer());
+        jest
+            .spyOn(window, 'fetch')
+            .mockReturnValue(fetchResponseOk({}));
+    });
+
+    afterEach(() => {
+        window.fetch.mockRestore();
     });
 
     const form = id => container.querySelector(`form[id="${id}"]`);
@@ -93,31 +102,18 @@ describe('AppointmentForm', () => {
 
             render(
                 <AppointmentForm
-                    {...{ ['service']: 'Cut' }}
-                    onSubmit={(props) =>
-                        expect(props['service']).toEqual('Cut')}
+                    {...{ ['service']: 'cut' }}
+                    customer={customer}
                 />
             );
 
-            await ReactTestUtils.Simulate.submit(form('appointment'));
-        });
+            await submit(form('appointment'));
 
-        it('saves new value when submitted', async () => {
-            expect.hasAssertions();
-
-            render(
-                <AppointmentForm
-                    {...{ ['service']: 'Cut' }}
-                    onSubmit={(props) =>
-                        expect(props['service']).toEqual('Cut')}
-                />
+            await expect(requestBodyOf(window.fetch)).toMatchObject({
+                ['service']: 'cut'
+            }
             );
 
-            await ReactTestUtils.Simulate.change(field('service'), {
-                target: { name: 'service', value: 'Cut' }
-            });
-
-            await ReactTestUtils.Simulate.submit(form('appointment'));
 
         });
     });
@@ -126,20 +122,19 @@ describe('AppointmentForm', () => {
         render(<AppointmentForm customer={customer} />);
         await submit(form('appointment'));
         expect(requestBodyOf(window.fetch)).toMatchObject({
-            ...appointment,
             customer: customer.id
         });
     });
 });
 
 describe('time slot table', () => {
-    let render, container;
+    let render, container, submit;
     const timeSlotTable = () => container.querySelector('table#time-slots');
     const startsAtField = index => container.querySelectorAll(`input[name="startsAt"]`)[index];
     const form = id => container.querySelector(`form[id="${id}"]`);
 
     beforeEach(() => {
-        ({ render, container } = createContainer());
+        ({ render, container, submit } = createContainer());
     });
 
     it('renders a table for time slots', () => {
@@ -246,13 +241,13 @@ describe('time slot table', () => {
             <AppointmentForm
                 availableTimeSlots={availableTimeSlots}
                 today={today}
+                customer={customer}
                 startsAt={availableTimeSlots[0].startsAt}
-                onSubmit={() =>
-                    expect(startsAtField(0).checked).toEqual(true)}
             />
         );
 
-        await ReactTestUtils.Simulate.submit(form('appointment'));
+        await submit(form('appointment'));
+        expect(startsAtField(0).checked).toEqual(true);
     });
 
     it(('saves new value when submitted'), () => {
