@@ -14,4 +14,12 @@ describe('childrenOf', () => {
             </div>
         )).toEqual([<p>A</p>, <p>B</p>]);
     });
+
+    it('returns a text as an array of one item when children is text itself', () => {
+        expect(childrenOf(<div>text</div>)).toEqual(['text']);
+    });
+
+    it('returns no children for text', () => {
+        expect(childrenOf('text')).toEqual([]);
+    });
 });
