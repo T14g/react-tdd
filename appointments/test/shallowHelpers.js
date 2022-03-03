@@ -3,12 +3,17 @@ import ShallowRenderer from 'react-test-renderer/shallow';
 
 export const createShallowRenderer = () => {
     let renderer = new ShallowRenderer();
+
     return {
         render: component => renderer.render(component),
-        child: n => undefined
+        elementsMatching: matcherFn =>
+            elementsMatching(renderer.getRenderOutput(), matcherFn),
+        child: n => childrenOf(renderer.getRenderOutput())[n]
     };
 };
 
+const elementsMatching = (element, matcherFn) =>
+    childrenOf(element).filter(matcherFn);
 
 export const childrenOf = element => {
     if (typeof element === 'string') {

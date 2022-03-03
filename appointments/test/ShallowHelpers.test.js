@@ -46,4 +46,36 @@ describe('child', () => {
         render(<TestComponent />);
         expect(child(0)).not.toBeDefined();
     });
+
+    it('returns child of rendered element', () => {
+        render(
+            <TestComponent>
+                <p>A</p>
+                <p>B</p>
+            </TestComponent>
+        );
+        expect(child(1)).toEqual(<p>B</p>);
+    });
+});
+
+const type = typeName => element => element.type === typeName;
+
+describe('elementsMatching', () => {
+    let render, elementsMatching;
+    beforeEach(() => {
+        ({ render, elementsMatching } = createShallowRenderer());
+    });
+    
+    it('finds multiple direct children', () => {
+        render(
+            <TestComponent>
+                <p>A</p>
+                <p>B</p>
+            </TestComponent>
+        );
+        expect(elementsMatching(type('p'))).toEqual([
+            <p>A</p>,
+            <p>B</p>
+        ]);
+    });
 });
