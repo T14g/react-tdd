@@ -12,8 +12,18 @@ export const createShallowRenderer = () => {
     };
 };
 
-const elementsMatching = (element, matcherFn) =>
-    childrenOf(element).filter(matcherFn);
+const elementsMatching = (element, matcherFn) => {
+    if (matcherFn(element)) {
+        return [element];
+    }
+
+    return childrenOf(element).reduce(
+        (acc, child) => [
+            ...acc, ...elementsMatching(child, matcherFn)
+        ],
+        []
+    );
+};
 
 export const childrenOf = element => {
     if (typeof element === 'string') {

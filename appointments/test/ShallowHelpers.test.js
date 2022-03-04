@@ -65,7 +65,7 @@ describe('elementsMatching', () => {
     beforeEach(() => {
         ({ render, elementsMatching } = createShallowRenderer());
     });
-    
+
     it('finds multiple direct children', () => {
         render(
             <TestComponent>
@@ -77,5 +77,17 @@ describe('elementsMatching', () => {
             <p>A</p>,
             <p>B</p>
         ]);
+    });
+
+    // test the recursive nature of function
+    it('finds indirect children', () => {
+        render(
+            <TestComponent>
+                <div>
+                    <p>A</p>
+                </div>
+            </TestComponent>
+        );
+        expect(elementsMatching(type('p'))).toEqual([<p>A</p>]);
     });
 });
