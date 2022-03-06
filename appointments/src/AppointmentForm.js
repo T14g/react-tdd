@@ -31,7 +31,7 @@ export const AppointmentForm = ({
 
     const handleSubmit = async e => {
         e.preventDefault();
-        
+
         const result = await window.fetch('/appointments', {
             method: 'POST',
             credentials: 'same-origin',
