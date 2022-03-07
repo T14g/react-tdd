@@ -1,5 +1,5 @@
 import React from 'react';
-import { childrenOf, createShallowRenderer } from './shallowHelpers';
+import { childrenOf, createShallowRenderer, type } from './shallowHelpers';
 
 describe('childrenOf', () => {
     it('returns no children', () => {
@@ -57,8 +57,6 @@ describe('child', () => {
         expect(child(1)).toEqual(<p>B</p>);
     });
 });
-
-const type = typeName => element => element.type === typeName;
 
 describe('elementsMatching', () => {
     let render, elementsMatching;
