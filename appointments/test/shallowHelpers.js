@@ -5,6 +5,7 @@ export const type = typeName => element => element.type === typeName;
 
 export const id = id => element =>
     element.props && element.props.id === id;
+    
 export const className = className => element =>
     element.props.className === className;
 
