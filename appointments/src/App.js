@@ -11,16 +11,14 @@ export const App = () => {
         []
     );
 
-    return (
-        <React.Fragment>
+    return view === 'addCustomer' ? <CustomerForm /> :
+        (<React.Fragment>
             <div className="button-bar" >
                 <button type="button" id="addCustomer" onClick={transitionToAddCustomer}>
                     Add customer and appointment
                 </button>
             </div>
             <AppointmentsDayViewLoader />
-            {view === 'addCustomer' ? <CustomerForm /> : <></>}
-        </React.Fragment>
-    );
+        </React.Fragment>);
 };
 
