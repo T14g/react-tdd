@@ -74,4 +74,10 @@ describe('App', () => {
         beginAddingCustomerAndAppointment();
         expect(elementMatching(type(CustomerForm))).toBeDefined();
     });
+
+    it('hides the button bar when CustomerForm is being displayed', async () => {
+        beginAddingCustomerAndAppointment();
+        console.log();
+        expect(elementMatching(className('.button-bar'))).not.toBeDefined();
+    });
 });
