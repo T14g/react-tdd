@@ -23,6 +23,9 @@ describe('App', () => {
         click(elementMatching(id('addCustomer')));
     };
 
+    const saveCustomer = customer =>
+        elementMatching(type(CustomerForm)).props.onSave(customer);
+
     it('initially shows the AppointmentDayViewLoader', () => {
         render(<App />);
         expect(
@@ -65,5 +68,10 @@ describe('App', () => {
     it('hides the button bar when CustomerForm is being displayed', async () => {
         beginAddingCustomerAndAppointment();
         expect(elementMatching(className('button-bar'))).toBeUndefined();
+    });
+
+    it('displays the CustomerForm when button is clicked', async () => {
+        beginAddingCustomerAndAppointment();
+        expect(elementMatching(type(CustomerForm))).toBeDefined();
     });
 });
