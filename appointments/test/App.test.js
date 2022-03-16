@@ -10,6 +10,7 @@ import {
 } from './shallowHelpers';
 import { App } from '../src/App';
 import { AppointmentsDayViewLoader } from '../src/AppointmentsDayViewLoader';
+import { AppointmentFormLoader } from '../src/AppointmentFormLoader';
 
 describe('App', () => {
     let render, elementMatching, child;
@@ -25,6 +26,11 @@ describe('App', () => {
 
     const saveCustomer = customer =>
         elementMatching(type(CustomerForm)).props.onSave(customer);
+
+    const saveAppointment = () =>
+        elementMatching(
+            type(AppointmentFormLoader)
+        ).props.onSave();
 
     it('initially shows the AppointmentDayViewLoader', () => {
         render(<App />);
@@ -77,7 +83,35 @@ describe('App', () => {
 
     it('hides the button bar when CustomerForm is being displayed', async () => {
         beginAddingCustomerAndAppointment();
-        console.log();
         expect(elementMatching(className('.button-bar'))).not.toBeDefined();
     });
+
+    it('displays the AppointmentFormLoader after the CustomerForm is submitted', async () => {
+        beginAddingCustomerAndAppointment();
+        saveCustomer();
+        await expect(
+            elementMatching(type(AppointmentFormLoader))
+        ).toBeDefined();
+    });
+
+    it('passes the customer to the AppointmentForm', async () => {
+        const customer = { id: 123 };
+        beginAddingCustomerAndAppointment();
+        saveCustomer(customer);
+        expect(
+            elementMatching(type(AppointmentFormLoader)).props
+                .customer
+        ).toBe(customer);
+    });
+
+    it('renders AppointmentDayViewLoader after AppointmentForm is submitted', async () => {
+        beginAddingCustomerAndAppointment();
+        saveCustomer();
+        saveAppointment();
+        expect(
+            elementMatching(type(AppointmentsDayViewLoader))
+        ).toBeDefined();
+    });
+
+
 });
