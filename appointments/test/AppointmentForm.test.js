@@ -8,21 +8,25 @@ import 'whatwg-fetch';
 const customer = { id: 123 };
 
 describe('AppointmentForm', () => {
-    let render, container, submit;
+    let render, container, submit, form, labelFor;
 
+    // antes de cada test define um container e os métodos auxiliares
     beforeEach(() => {
-        ({ render, container, submit } = createContainer());
+        ({ render, container, submit, form, labelFor } = createContainer());
+
+        //cria um spy do fetch com retorno OK por default
         jest
             .spyOn(window, 'fetch')
             .mockReturnValue(fetchResponseOk({}));
     });
 
+    // limpa tudo que foi mockado e narestaura o fetch original
     afterEach(() => {
         window.fetch.mockRestore();
     });
 
-    const form = id => container.querySelector(`form[id="${id}"]`);
-    const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
+    // const form = id => container.querySelector(`form[id="${id}"]`);
+    // const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
     const field = name => form('appointment').elements[name];
 
     it('renders a form', () => {

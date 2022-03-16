@@ -5,6 +5,11 @@ export const withEvent = (name, value) => ({
     target: { name, value }
 });
 
+// Cria um container em uma div
+// Possui métodos para encontrar forms, fiels e labels
+// Possui métodos para achar elementos separados ou grupos de elementos
+// Possui Simuladores de evento async e sync
+// Possui render async e sync
 export const createContainer = () => {
     const container = document.createElement('div');
 
