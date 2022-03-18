@@ -22,13 +22,12 @@ describe('AppointmentForm', () => {
 
     // limpa tudo que foi mockado e narestaura o fetch original
     afterEach(() => {
-        window.fetch.mockRestore();
+        window.fetch.mockRestore();     
     });
-
-    // const form = id => container.querySelector(`form[id="${id}"]`);
-    // const labelFor = formEl => container.querySelector(`label[for="${formEl}"]`);
+    
     const field = name => form('appointment').elements[name];
 
+    // not toBeNull
     it('renders a form', () => {
         render(<AppointmentForm />);
         expect(form('appointment')).not.toBeNull();
@@ -42,12 +41,14 @@ describe('AppointmentForm', () => {
             );
         };
 
+        // Se não é nulo e se é um select
         it('renders as a select box', () => {
             render(<AppointmentForm />);
             expect(field('service')).not.toBeNull();
             expect(field('service').tagName).toEqual('SELECT');
         });
 
+        // Em branco e selecionado truthy
         it('initiatlly has a blank value chosen', () => {
             render(<AppointmentForm />);
             const firstNode = field('service').childNodes[0];
