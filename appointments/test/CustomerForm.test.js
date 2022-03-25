@@ -5,7 +5,7 @@ import { fetchResponseOk, fetchResponseError, requestBodyOf } from './spyHelpers
 import 'whatwg-fetch';
 
 describe('CustomerForm', () => {
-    let render, form, field, labelFor, element, change, submit;
+    let render, form, field, labelFor, element, change, submit, blur;
 
     const spy = () => {
         let receivedArguments, returnValue;
@@ -22,7 +22,7 @@ describe('CustomerForm', () => {
     };
 
     beforeEach(() => {
-        ({ render, form, field, labelFor, element, change, submit } = createContainer());
+        ({ render, form, field, labelFor, element, change, submit, blur } = createContainer());
         jest
             .spyOn(window, 'fetch')
             .mockReturnValue(fetchResponseOk({}));
@@ -205,4 +205,19 @@ describe('CustomerForm', () => {
         expect(errorElement).not.toBeNull();
         expect(errorElement.textContent).toMatch('error occurred');
     });
+
+    it('displays error after blur when first name field is blank', () => {
+        render(<CustomerForm />);
+
+        blur(
+            field('customer', 'firstName'),
+            withEvent('firstName', ' ')
+        );
+        
+        expect(element('.error')).not.toBeNull();
+        expect(element('.error').textContent).toMatch(
+            'First name is required'
+        );
+    });
+
 });
