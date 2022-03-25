@@ -2,11 +2,36 @@ import React, { useState } from "react";
 
 const Error = () => (
     <div className="error">An error occurred during save.</div>
-   );   
+);
 
 export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phone: phone });
     const [error, setError] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
+
+    const required = value => !value || value.trim() === '' ? 'First name is required' : undefined;
+
+    const handleBlur = ({ target }) => {
+        const result = required(target.value);
+        setValidationErrors({
+            ...validationErrors,
+            firstName: result
+        });
+    };
+
+    const hasFirstNameError = () =>
+        validationErrors.firstName !== undefined;
+
+    const renderFirstNameError = () => {
+        if (hasFirstNameError()) {
+            return (
+                <span className="error">
+                    {validationErrors.firstName}
+                </span>
+            );
+        }
+    };
+
 
     const handleChange = ({ target }) => {
         setCustomer(customer => ({
@@ -17,7 +42,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        
+
         const result = await window.fetch('/customers', {
             method: 'POST',
             credentials: 'same-origin',
@@ -28,14 +53,14 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
         if (result.ok) {
             const customerWithId = await result.json();
             onSave(customerWithId);
-        }else{
+        } else {
             setError(true);
         }
     };
 
     return (
         <form id="customer" onSubmit={handleSubmit}>
-            { error ? <Error /> : null }
+            {error ? <Error /> : null}
             <label htmlFor="firstName">First Name</label>
             <input
                 type="text"
@@ -44,7 +69,9 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
                 id="firstName"
                 onChange={handleChange}
                 readOnly
+                onBlur={handleBlur}
             />
+            {renderFirstNameError()}
             <label htmlFor="lastName">Last Name</label>
             <input
                 type="text"
