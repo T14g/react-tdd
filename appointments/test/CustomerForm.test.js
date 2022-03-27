@@ -213,10 +213,24 @@ describe('CustomerForm', () => {
             field('customer', 'firstName'),
             withEvent('firstName', ' ')
         );
-        
+
         expect(element('.error')).not.toBeNull();
         expect(element('.error').textContent).toMatch(
             'First name is required'
+        );
+    });
+
+    it('displays error after blur when last name field is blank', () => {
+        render(<CustomerForm />);
+
+        blur(
+            field('customer', 'lastName'),
+            withEvent('lastName', ' ')
+        );
+        
+        expect(element('.error')).not.toBeNull();
+        expect(element('.error').textContent).toMatch(
+            'Last name is required'
         );
     });
 

@@ -10,6 +10,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [validationErrors, setValidationErrors] = useState({});
 
     const required = value => !value || value.trim() === '' ? 'First name is required' : undefined;
+    const lastNameRequired = value => !value || value.trim() === '' ? 'Last name is required' : undefined;
 
     const handleBlur = ({ target }) => {
         const result = required(target.value);
@@ -32,6 +33,18 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
         }
     };
 
+    const hasLastLastNameError = () =>
+        validationErrors.lastName !== undefined;
+
+    const renderLastNameError = () => {
+        if (hasLastLastNameError()) {
+            return (
+                <span className="error">
+                    {validationErrors.firstName}
+                </span>
+            );
+        }
+    };
 
     const handleChange = ({ target }) => {
         setCustomer(customer => ({
@@ -80,7 +93,9 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
                 id="lastName"
                 onChange={handleChange}
                 readOnly
+                onBlur={handleBlur}
             />
+            {renderLastNameError()}
             <label htmlFor="phone">Phone</label>
             <input
                 type="text"
