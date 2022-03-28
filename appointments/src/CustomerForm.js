@@ -9,11 +9,14 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [error, setError] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
 
-    const required = value => !value || value.trim() === '' ? 'First name is required' : undefined;
+    const firstNamerequired = value => !value || value.trim() === '' ? 'First name is required' : undefined;
     const lastNameRequired = value => !value || value.trim() === '' ? 'Last name is required' : undefined;
 
     const handleBlur = ({ target }) => {
-        const result = required(target.value);
+       const fieldName = target.name;
+
+        const result = fieldName == 'firstName' ? firstNamerequired(target.value) : lastNameRequired(target.value);
+
         setValidationErrors({
             ...validationErrors,
             firstName: result
