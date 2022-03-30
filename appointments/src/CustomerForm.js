@@ -9,39 +9,32 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [error, setError] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
 
-    const required = (target) => {
-        const fieldName = target.name;
-        const value = target.value;
+    const required = description => value =>
+        !value || value.trim() === '' ? description : undefined;
 
-        let result = '';
-
-        if(fieldName == 'firstName') {
-            console.log("run");
-            result = !value || value.trim() === '' ? 'First name is required' : undefined;
-        }else if(fieldName == 'lastName'){
-            result = !value || value.trim() === '' ? 'Last name is required' : undefined;
-        }
-
-        return result;
-    }
-
+    // High order , on the return of the first you call 2nd
     const handleBlur = ({ target }) => {
-        const result =required(target);
+        const validators = {
+            firstName: required('First name is required'),
+            lastName: required('Last name is required')
+        };
+
+        const result = validators[target.name](target.value);
 
         setValidationErrors({
             ...validationErrors,
-            firstName: result
+            [target.name]: result
         });
     };
 
-    const hasFirstNameError = () =>
-        validationErrors.firstName !== undefined;
+    const hasError = fieldName =>
+        validationErrors[fieldName] !== undefined;
 
-    const renderFirstNameError = () => {
-        if (hasFirstNameError()) {
+    const renderError = fieldName => {
+        if (hasError(fieldName)) {
             return (
                 <span className="error">
-                    {validationErrors.firstName}
+                    {validationErrors[fieldName]}
                 </span>
             );
         }
@@ -98,7 +91,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
                 readOnly
                 onBlur={handleBlur}
             />
-            {renderFirstNameError()}
+            {renderError('firstName')}
             <label htmlFor="lastName">Last Name</label>
             <input
                 type="text"
@@ -109,7 +102,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
                 readOnly
                 onBlur={handleBlur}
             />
-            {renderLastNameError()}
+            {renderError('lastName')}
             <label htmlFor="phone">Phone</label>
             <input
                 type="text"
