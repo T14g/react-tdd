@@ -205,33 +205,31 @@ describe('CustomerForm', () => {
         expect(errorElement).not.toBeNull();
         expect(errorElement.textContent).toMatch('error occurred');
     });
+    
+    const itInvalidatesFieldWithValue = (
+        fieldName,
+        value,
+        description
+    ) => {
+        it(`displays error after blur when ${fieldName} field is
+           '${value}'`, () => {
+            render(<CustomerForm />);
+            blur(
+                field('customer', fieldName),
+                withEvent(fieldName, value)
+            );
+            expect(element('.error')).not.toBeNull();
+            expect(element('.error').textContent).toMatch(
+                description
+            );
+        });
+    }
 
-    it('displays error after blur when first name field is blank', () => {
-        render(<CustomerForm />);
+    itInvalidatesFieldWithValue(
+        'firstName',' ','First name is required'
+    );
 
-        blur(
-            field('customer', 'firstName'),
-            withEvent('firstName', ' ')
-        );
-
-        expect(element('.error')).not.toBeNull();
-        expect(element('.error').textContent).toMatch(
-            'First name is required'
-        );
-    });
-
-    it('displays error after blur when last name field is blank', () => {
-        render(<CustomerForm />);
-
-        blur(
-            field('customer', 'lastName'),
-            withEvent('lastName', ' ')
-        );
-        
-        expect(element('.error')).not.toBeNull();
-        expect(element('.error').textContent).toMatch(
-            'Last name is required'
-        );
-    });
-
+    itInvalidatesFieldWithValue(
+        'lastName',' ','Last name is required'
+    );
 });

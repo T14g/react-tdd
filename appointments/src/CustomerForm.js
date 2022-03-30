@@ -39,20 +39,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
             );
         }
     };
-
-    const hasLastLastNameError = () =>
-        validationErrors.lastName !== undefined;
-
-    const renderLastNameError = () => {
-        if (hasLastLastNameError()) {
-            return (
-                <span className="error">
-                    {validationErrors.firstName}
-                </span>
-            );
-        }
-    };
-
+    
     const handleChange = ({ target }) => {
         setCustomer(customer => ({
             ...customer,
