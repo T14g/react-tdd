@@ -205,7 +205,7 @@ describe('CustomerForm', () => {
         expect(errorElement).not.toBeNull();
         expect(errorElement.textContent).toMatch('error occurred');
     });
-    
+
     const itInvalidatesFieldWithValue = (
         fieldName,
         value,
@@ -226,10 +226,15 @@ describe('CustomerForm', () => {
     }
 
     itInvalidatesFieldWithValue(
-        'firstName',' ','First name is required'
+        'firstName', ' ', 'First name is required'
     );
 
     itInvalidatesFieldWithValue(
-        'lastName',' ','Last name is required'
+        'lastName', ' ', 'Last name is required'
     );
+
+    itInvalidatesFieldWithValue(
+        'phoneNumber', ' ', 'Phone number is required'
+    );
+
 });
