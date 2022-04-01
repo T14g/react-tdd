@@ -40,7 +40,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
             );
         }
     };
-    
+
     const handleChange = ({ target }) => {
         setCustomer(customer => ({
             ...customer,
