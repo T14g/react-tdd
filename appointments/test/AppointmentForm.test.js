@@ -22,9 +22,9 @@ describe('AppointmentForm', () => {
 
     // limpa tudo que foi mockado e narestaura o fetch original
     afterEach(() => {
-        window.fetch.mockRestore();     
+        window.fetch.mockRestore();
     });
-    
+
     const field = name => form('appointment').elements[name];
 
     // not toBeNull
