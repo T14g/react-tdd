@@ -237,4 +237,9 @@ describe('CustomerForm', () => {
         'phoneNumber', ' ', 'Phone number is required'
     );
 
+    itInvalidatesFieldWithValue(
+        'phoneNumber',
+        'invalid',
+        'Only numbers, spaces and these symbols are allowed: ( ) + -'
+    );
 });
