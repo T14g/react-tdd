@@ -75,6 +75,7 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
 
     const match = (re, description) => value => !value.match(re) ? description : undefined;
 
+    // Retorna todos os validadores até um retornar uma string
     const list = (...validators) => value =>
         validators.reduce(
             (result, validator) => result || validator(value),
