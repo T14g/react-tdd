@@ -4,6 +4,12 @@ import { CustomerForm } from '../src/CustomerForm';
 import { fetchResponseOk, fetchResponseError, requestBodyOf } from './spyHelpers';
 import 'whatwg-fetch';
 
+const validCustomer = {
+    firstName: 'first',
+    lastName: 'last',
+    phoneNumber: '123456789'
+};
+
 describe('CustomerForm', () => {
     let render, form, field, labelFor, element, change, submit, blur;
 
@@ -73,6 +79,7 @@ describe('CustomerForm', () => {
 
             render(
                 <CustomerForm
+                    {...validCustomer}
                     {...{ [fieldName]: value }}
                 />
             );
@@ -90,6 +97,7 @@ describe('CustomerForm', () => {
 
             render(
                 <CustomerForm
+                    {...validCustomer}
                     {...{ fieldName: value }}
                 />
             );
@@ -148,7 +156,7 @@ describe('CustomerForm', () => {
 
     it(('calls fetch with the right properties when submitting data'), async () => {
         render(
-            <CustomerForm onSubmit={() => { }} />
+            <CustomerForm onSubmit={() => { }}  {...validCustomer} />
         );
 
         submit(form('customer'));
@@ -166,7 +174,7 @@ describe('CustomerForm', () => {
         const customer = { id: 123 };
         window.fetch.mockReturnValue(fetchResponseOk(customer));
         const saveSpy = jest.fn();
-        render(<CustomerForm onSave={saveSpy} />);
+        render(<CustomerForm onSave={saveSpy}  {...validCustomer} />);
         await submit(form('customer'));
 
         expect(saveSpy).toHaveBeenCalledWith(customer);
@@ -176,7 +184,7 @@ describe('CustomerForm', () => {
         () => {
             window.fetch.mockReturnValue(fetchResponseError());
             const saveSpy = jest.fn();
-            render(<CustomerForm onSave={saveSpy} />);
+            render(<CustomerForm onSave={saveSpy}  {...validCustomer} />);
 
             submit(form('customer'));
 
@@ -186,7 +194,7 @@ describe('CustomerForm', () => {
     it('prevents the default action when submitting the form', () => {
         const preventDefaultSpy = jest.fn();
 
-        render(<CustomerForm />);
+        render(<CustomerForm  {...validCustomer} />);
         submit(form('customer'), {
             preventDefault: preventDefaultSpy
         });
@@ -197,7 +205,7 @@ describe('CustomerForm', () => {
     it(('renders error message when fetch call fails'), async () => {
         window.fetch.mockReturnValue(Promise.resolve({ ok: false }));
 
-        render(<CustomerForm />);
+        render(<CustomerForm  {...validCustomer} />);
 
         await submit(form('customer'));
 
@@ -213,7 +221,7 @@ describe('CustomerForm', () => {
     ) => {
         it(`displays error after blur when ${fieldName} field is
            '${value}'`, () => {
-            render(<CustomerForm />);
+            render(<CustomerForm  {...validCustomer} />);
             blur(
                 field('customer', fieldName),
                 withEvent(fieldName, value)
@@ -244,11 +252,17 @@ describe('CustomerForm', () => {
     );
 
     it('accepts standard phone number characters when validating', () => {
-        render(<CustomerForm />);
+        render(<CustomerForm  {...validCustomer} />);
         blur(
             element("[name='phoneNumber']"),
             withEvent('phoneNumber', '0123456789+()- ')
         );
         expect(element('.error')).toBeNull();
     });
-});
+
+    it('does not submit the form when there are validation errors', async () => {
+        render(<CustomerForm />);
+        await submit(form('customer'));
+        expect(window.fetch).not.toHaveBeenCalled();
+    });
+}); 

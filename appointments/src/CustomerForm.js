@@ -9,24 +9,33 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [error, setError] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
 
+    // Retorna todos os validadores até um retornar uma string
+    const list = (...validators) => value =>
+        validators.reduce(
+            (result, validator) => result || validator(value),
+            undefined
+        );
+
+    const match = (re, description) => value => !value.match(re) ? description : undefined;
+
     const required = description => value =>
         !value || value.trim() === '' ? description : undefined;
 
+    const validators = {
+        firstName: required('First name is required'),
+        lastName: required('Last name is required'),
+        phoneNumber: list(
+            required('Phone number is required'),
+            match(
+                /^[0-9+()\- ]*$/,
+                'Only numbers, spaces and these symbols are allowed: ( ) + -'
+            )
+        )
+
+    };
+
     // High order , on the return of the first you call 2nd
     const handleBlur = ({ target }) => {
-        const validators = {
-            firstName: required('First name is required'),
-            lastName: required('Last name is required'),
-            phoneNumber: list(
-                required('Phone number is required'),
-                match(
-                    /^[0-9+()\- ]*$/,
-                    'Only numbers, spaces and these symbols are allowed: ( ) + -'
-                )
-            )
-
-        };
-
         const result = validators[target.name](target.value);
 
         setValidationErrors({
@@ -72,15 +81,6 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
             setError(true);
         }
     };
-
-    const match = (re, description) => value => !value.match(re) ? description : undefined;
-
-    // Retorna todos os validadores até um retornar uma string
-    const list = (...validators) => value =>
-        validators.reduce(
-            (result, validator) => result || validator(value),
-            undefined
-        );
 
     return (
         <form id="customer" onSubmit={handleSubmit}>
