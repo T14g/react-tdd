@@ -107,7 +107,7 @@ describe('CustomerForm', () => {
             });
 
             await submit(form('customer'));
-
+            console.log(requestBodyOf(window.fetch));
             expect(requestBodyOf(window.fetch)).toMatchObject({
                 [fieldName]: value
             });

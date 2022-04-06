@@ -4,35 +4,35 @@ const Error = () => (
     <div className="error">An error occurred during save.</div>
 );
 
+// Retorna todos os validadores até um retornar uma string
+const list = (...validators) => value =>
+    validators.reduce(
+        (result, validator) => result || validator(value),
+        undefined
+    );
+
+const match = (re, description) => value => !value.match(re) ? description : undefined;
+
+const required = description => value =>
+    !value || value.trim() === '' ? description : undefined;
+
+const validators = {
+    firstName: required('First name is required'),
+    lastName: required('Last name is required'),
+    phoneNumber: list(
+        required('Phone number is required'),
+        match(
+            /^[0-9+()\- ]*$/,
+            'Only numbers, spaces and these symbols are allowed: ( ) + -'
+        )
+    )
+
+};
+
 export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
     const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phone: phone });
     const [error, setError] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
-
-    // Retorna todos os validadores até um retornar uma string
-    const list = (...validators) => value =>
-        validators.reduce(
-            (result, validator) => result || validator(value),
-            undefined
-        );
-
-    const match = (re, description) => value => !value.match(re) ? description : undefined;
-
-    const required = description => value =>
-        !value || value.trim() === '' ? description : undefined;
-
-    const validators = {
-        firstName: required('First name is required'),
-        lastName: required('Last name is required'),
-        phoneNumber: list(
-            required('Phone number is required'),
-            match(
-                /^[0-9+()\- ]*$/,
-                'Only numbers, spaces and these symbols are allowed: ( ) + -'
-            )
-        )
-
-    };
 
     // High order , on the return of the first you call 2nd
     const handleBlur = ({ target }) => {
@@ -64,21 +64,28 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
         }));
     };
 
+    const anyErrors = errors =>
+        Object.values(errors).some(error => error !== undefined);
+
     const handleSubmit = async e => {
         e.preventDefault();
 
-        const result = await window.fetch('/customers', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(customer)
-        });
+        const validationResult = validateMany(customer);
 
-        if (result.ok) {
-            const customerWithId = await result.json();
-            onSave(customerWithId);
-        } else {
-            setError(true);
+        if (!anyErrors(validationResult)) {
+            const result = await window.fetch('/customers', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(customer)
+            });
+
+            if (result.ok) {
+                const customerWithId = await result.json();
+                onSave(customerWithId);
+            } else {
+                setError(true);
+            }
         }
     };
 
