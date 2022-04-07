@@ -107,7 +107,7 @@ describe('CustomerForm', () => {
             });
 
             await submit(form('customer'));
-            console.log(requestBodyOf(window.fetch));
+
             expect(requestBodyOf(window.fetch)).toMatchObject({
                 [fieldName]: value
             });
@@ -140,12 +140,12 @@ describe('CustomerForm', () => {
     });
 
     describe('phone number field', () => {
-        itRendersAsATextBox('phone');
-        itIncludesTheExistingValue('phone', '012345');
-        itRendersALabel('phone', 'Phone');
-        itAssignsAnIdThatMatchesLabelId('phone', 'phone');
-        itSubmitsExistingValue('phone', '012345');
-        itSubmitsNewValue('phone', '012345');
+        itRendersAsATextBox('phoneNumber');
+        itIncludesTheExistingValue('phoneNumber', '012345');
+        itRendersALabel('phoneNumber', 'Phone');
+        itAssignsAnIdThatMatchesLabelId('phoneNumber', 'phoneNumber');
+        itSubmitsExistingValue('phoneNumber', '012345');
+        itSubmitsNewValue('phoneNumber', '012345');
     });
 
     it('has a submit button', () => {

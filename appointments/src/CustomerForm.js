@@ -4,6 +4,9 @@ const Error = () => (
     <div className="error">An error occurred during save.</div>
 );
 
+const anyErrors = errors =>
+    Object.values(errors).some(error => error !== undefined);
+
 // Retorna todos os validadores até um retornar uma string
 const list = (...validators) => value =>
     validators.reduce(
@@ -29,8 +32,18 @@ const validators = {
 
 };
 
-export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
-    const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phone: phone });
+const validateMany = fields =>
+    Object.entries(fields).reduce(
+        (result, [name, value]) => ({
+            ...result,
+            [name]: validators[name](value)
+        }),
+        {}
+    );
+
+export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
+    const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phoneNumber: phoneNumber });
+
     const [error, setError] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
 
@@ -64,12 +77,10 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
         }));
     };
 
-    const anyErrors = errors =>
-        Object.values(errors).some(error => error !== undefined);
+
 
     const handleSubmit = async e => {
         e.preventDefault();
-
         const validationResult = validateMany(customer);
 
         if (!anyErrors(validationResult)) {
@@ -114,12 +125,12 @@ export const CustomerForm = ({ firstName, lastName, phone, onSave }) => {
                 onBlur={handleBlur}
             />
             {renderError('lastName')}
-            <label htmlFor="phone">Phone</label>
+            <label htmlFor="phoneNumber">Phone</label>
             <input
                 type="text"
                 name="phoneNumber"
-                value={phone}
-                id="phone"
+                value={phoneNumber}
+                id="phoneNumber"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 readOnly
