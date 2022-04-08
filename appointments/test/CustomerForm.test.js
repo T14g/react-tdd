@@ -265,4 +265,11 @@ describe('CustomerForm', () => {
         await submit(form('customer'));
         expect(window.fetch).not.toHaveBeenCalled();
     });
+
+    it('renders validation errors after submission fails', async () => {
+        render(<CustomerForm />);
+        await submit(form('customer'));
+        expect(window.fetch).not.toHaveBeenCalled();
+        expect(element('.error')).not.toBeNull();
+    });
 }); 

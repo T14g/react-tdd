@@ -97,7 +97,10 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
             } else {
                 setError(true);
             }
+        } else {
+            setValidationErrors(validationResult);
         }
+
     };
 
     return (
