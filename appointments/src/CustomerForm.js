@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { required, match, list } from './formValidation';
 
 const Error = () => (
     <div className="error">An error occurred during save.</div>
@@ -6,18 +7,6 @@ const Error = () => (
 
 const anyErrors = errors =>
     Object.values(errors).some(error => error !== undefined);
-
-// Retorna todos os validadores até um retornar uma string
-const list = (...validators) => value =>
-    validators.reduce(
-        (result, validator) => result || validator(value),
-        undefined
-    );
-
-const match = (re, description) => value => !value.match(re) ? description : undefined;
-
-const required = description => value =>
-    !value || value.trim() === '' ? description : undefined;
 
 const validators = {
     firstName: required('First name is required'),
