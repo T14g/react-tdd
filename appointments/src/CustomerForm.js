@@ -81,8 +81,12 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
             });
 
             if (result.ok) {
+                setError(false);
                 const customerWithId = await result.json();
                 onSave(customerWithId);
+            } else if (result.status.code === 422) {
+                const response = await result.json();
+                setValidationErrors(response.errors);
             } else {
                 setError(true);
             }

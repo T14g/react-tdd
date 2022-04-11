@@ -191,6 +191,20 @@ describe('CustomerForm', () => {
             expect(saveSpy).not.toHaveBeenCalled();
         });
 
+    it('renders field validation errors from server', async () => {
+        const errors = {
+            phoneNumber: 'Phone number already exists in the system'
+        };
+        window.fetch.mockReturnValue(
+            fetchResponseError(422, { errors })
+        );
+        render(<CustomerForm {...validCustomer} />);
+        await submit(form('customer'));
+        expect(element('.error').textContent).toMatch(
+            errors.phoneNumber
+        );
+    });
+
     it('prevents the default action when submitting the form', () => {
         const preventDefaultSpy = jest.fn();
 
