@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { required, match, list } from './formValidation';
+import { required, match, list, hasError, validateMany, anyErrors } from './formValidation';
 
 const Error = () => (
     <div className="error">An error occurred during save.</div>
 );
-
-const anyErrors = errors =>
-    Object.values(errors).some(error => error !== undefined);
 
 const validators = {
     firstName: required('First name is required'),
@@ -21,15 +18,6 @@ const validators = {
 
 };
 
-const validateMany = fields =>
-    Object.entries(fields).reduce(
-        (result, [name, value]) => ({
-            ...result,
-            [name]: validators[name](value)
-        }),
-        {}
-    );
-
 export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
     const [customer, setCustomer] = useState({ firstName: firstName, lastName: lastName, phoneNumber: phoneNumber });
 
@@ -38,19 +26,14 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
 
     // High order , on the return of the first you call 2nd
     const handleBlur = ({ target }) => {
-        const result = validators[target.name](target.value);
-
-        setValidationErrors({
-            ...validationErrors,
-            [target.name]: result
+        const result = validateMany(validators, {
+            [target.name]: target.value
         });
-    };
-
-    const hasError = fieldName =>
-        validationErrors[fieldName] !== undefined;
+        setValidationErrors({ ...validationErrors, ...result });
+    }
 
     const renderError = fieldName => {
-        if (hasError(fieldName)) {
+        if (hasError(validationErrors, fieldName)) {
             return (
                 <span className="error">
                     {validationErrors[fieldName]}
@@ -66,11 +49,9 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
         }));
     };
 
-
-
     const handleSubmit = async e => {
         e.preventDefault();
-        const validationResult = validateMany(customer);
+        const validationResult = validateMany(validators, customer);
 
         if (!anyErrors(validationResult)) {
             const result = await window.fetch('/customers', {

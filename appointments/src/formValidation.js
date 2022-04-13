@@ -10,3 +10,18 @@ export const match = (re, description) => value => !value.match(re) ? descriptio
 
 export const required = description => value =>
     !value || value.trim() === '' ? description : undefined;
+
+export const hasError = (validationErrors, fieldName) =>
+    validationErrors[fieldName] !== undefined;
+
+export const validateMany = (validators, fields) =>
+    Object.entries(fields).reduce(
+        (result, [name, value]) => ({
+            ...result,
+            [name]: validators[name](value)
+        }),
+        {}
+    );
+
+export const anyErrors = errors =>
+    Object.values(errors).some(error => error !== undefined);
