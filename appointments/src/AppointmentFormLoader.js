@@ -20,9 +20,9 @@ export const AppointmentFormLoader = props => {
 
     return (
         <AppointmentForm
-        {...props}
-         availableTimeSlots={availableTimeSlots} 
-         />
+            {...props}
+            availableTimeSlots={availableTimeSlots}
+        />
     );
 
 };
