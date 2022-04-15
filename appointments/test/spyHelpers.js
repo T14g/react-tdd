@@ -6,6 +6,7 @@ export const fetchResponseOk = body =>
         json: () => Promise.resolve(body)
     });
 
+// retorna uma promise com status 500 e com corpo de um objeto vazio por padrão
 export const fetchResponseError = (status = 500, body = {}) =>
     Promise.resolve({
         ok: false,
@@ -13,5 +14,6 @@ export const fetchResponseError = (status = 500, body = {}) =>
         json: () => Promise.resolve(body)
     });
 
+// retorna o corpo de uma chamada mockada
 export const requestBodyOf = fetchSpy =>
     JSON.parse(fetchSpy.mock.calls[0][1].body);
