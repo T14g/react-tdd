@@ -118,7 +118,7 @@ export const CustomerForm = ({ firstName, lastName, phoneNumber, onSave }) => {
             />
             {renderError('phoneNumber')}
             <input type="submit" value="Add" />
-            <span className="submittingIndicator" />
+            { submitting ? <span className="submittingIndicator" /> : null }
         </form>
     );
 };

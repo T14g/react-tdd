@@ -298,5 +298,10 @@ describe('CustomerForm', () => {
                 expect(element('span.submittingIndicator')).not.toBeNull();
             });
         });
+
+        it('initially does not display the submitting indicator', () => {
+            render(<CustomerForm {...validCustomer} />);
+            expect(element('.submittingIndicator')).toBeNull();
+        });
     })
 });
