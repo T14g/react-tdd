@@ -303,5 +303,11 @@ describe('CustomerForm', () => {
             render(<CustomerForm {...validCustomer} />);
             expect(element('.submittingIndicator')).toBeNull();
         });
+
+        it('hides indicator when form has submitted', async () => {
+            render(<CustomerForm {...validCustomer} />);
+            await submit(form('customer'));
+            expect(element('.submittingIndicator')).toBeNull();
+        });
     })
 });
