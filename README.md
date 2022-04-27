@@ -7,3 +7,4 @@ Apenas um repositório para estudo de TDD com React.js e Jest, com alguns bons e
 -Anything over 5 lines should be refactored except render method
 -Blocks into  Methods
 -Temporal coupling :?
+1
