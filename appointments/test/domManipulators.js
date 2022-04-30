@@ -21,7 +21,7 @@ export const createContainer = () => {
         container.querySelector(selector);
 
     const elements = selector =>
-        Array.from(container.querySelectorAll);
+        Array.from(container.querySelectorAll(selector));
 
     const simulateEvent = eventName => (element, eventData) =>
         ReactTestUtils.Simulate[eventName](element, eventData);
