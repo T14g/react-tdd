@@ -8,11 +8,11 @@ import 'whatwg-fetch';
 const customer = { id: 123 };
 
 describe('AppointmentForm', () => {
-    let render, container, submit, form, labelFor;
+    let render, submit, form, labelFor;
 
     // antes de cada test define um container e os métodos auxiliares
     beforeEach(() => {
-        ({ render, container, submit, form, labelFor } = createContainer());
+        ({ render, submit, form, labelFor } = createContainer());
 
         //cria um spy do fetch com retorno OK por default
         jest
