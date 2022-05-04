@@ -16,6 +16,7 @@ export const CustomerSearch = () => {
     // inline function to ensure we don't return a value to useEffect, and passing an
     // empty array to ensure the effect only runs when the component is first mounted:
     useEffect(() => {
+
         const fetchData = async () => {
             const result = await window.fetch('/customers', {
                 method: 'GET',
@@ -40,9 +41,9 @@ export const CustomerSearch = () => {
                 </tr>
             </thead>
             <tbody>
-                {customers[0] ? (
-                    <CustomerRow customer={customers[0]} />
-                ) : null}
+                {customers.length > 0 && customers.map(customer => (
+                    <CustomerRow customer={customer} key={customer.id} />
+                ))}
             </tbody>
         </table>
     );
