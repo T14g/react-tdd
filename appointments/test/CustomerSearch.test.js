@@ -4,11 +4,15 @@ import { CustomerSearch } from '../src/CustomerSearch';
 import { fetchResponseOk } from "./spyHelpers";
 import 'whatwg-fetch';
 
+const oneCustomer = [
+    { id: 1, firstName: 'A', lastName: 'B', phoneNumber: '1' },
+];
+
 describe('CustomerSearch', () => {
-    let renderAndWait, elements;
+    let renderAndWait, elements, container;
 
     beforeEach(() => {
-        ({ renderAndWait, elements } = createContainer());
+        ({ renderAndWait, elements, container } = createContainer());
 
         jest.spyOn(window, 'fetch');
     });
@@ -32,4 +36,14 @@ describe('CustomerSearch', () => {
         });
     });
 
+    it('renders all customer data in a table row', async () => {
+        window.fetch.mockReturnValue(fetchResponseOk(oneCustomer));
+        await renderAndWait(<CustomerSearch />);
+
+        const rows = elements('table tbody td');
+
+        expect(rows[0].textContent).toEqual('A');
+        expect(rows[1].textContent).toEqual('B');
+        expect(rows[2].textContent).toEqual('1');
+    });
 });
