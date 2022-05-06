@@ -9,6 +9,14 @@ const CustomerRow = ({ customer }) => (
     </tr>
 );
 
+const SearchButtons = () => (
+    <div className="button-bar">
+        <button role="button" id="next-page">
+            Next
+        </button>
+    </div>
+);
+
 export const CustomerSearch = () => {
     const [customers, setCustomers] = useState([]);
 
@@ -31,20 +39,23 @@ export const CustomerSearch = () => {
     }, []);
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th>First name</th>
-                    <th>Last name</th>
-                    <th>Phone number</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {customers.length > 0 && customers.map(customer => (
-                    <CustomerRow customer={customer} key={customer.id} />
-                ))}
-            </tbody>
-        </table>
+        <React.Fragment>
+            <SearchButtons />
+            <table>
+                <thead>
+                    <tr>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Phone number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {customers.length > 0 && customers.map(customer => (
+                        <CustomerRow customer={customer} key={customer.id} />
+                    ))}
+                </tbody>
+            </table>
+        </React.Fragment>
     );
 };

@@ -13,10 +13,10 @@ const twoCustomers = [
     { id: 2, firstName: 'C', lastName: 'D', phoneNumber: '2' }];
 
 describe('CustomerSearch', () => {
-    let renderAndWait, elements, container;
+    let renderAndWait, elements, element;
 
     beforeEach(() => {
-        ({ renderAndWait, elements, container } = createContainer());
+        ({ renderAndWait, elements, element } = createContainer());
 
         jest
             .spyOn(window, 'fetch')
@@ -64,4 +64,8 @@ describe('CustomerSearch', () => {
         expect(rows[1].childNodes[0].textContent).toEqual('C');
     });
 
+    it('has a next button', async () => {
+        await renderAndWait(<CustomerSearch />);
+        expect(element('button#next-page')).not.toBeNull();
+    });
 });
