@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 const CustomerRow = ({ customer }) => (
     <tr>
@@ -9,9 +9,9 @@ const CustomerRow = ({ customer }) => (
     </tr>
 );
 
-const SearchButtons = () => (
+const SearchButtons = ({ handleNext }) => (
     <div className="button-bar">
-        <button role="button" id="next-page">
+        <button role="button" id="next-page" onClick={handleNext}>
             Next
         </button>
     </div>
@@ -19,6 +19,18 @@ const SearchButtons = () => (
 
 export const CustomerSearch = () => {
     const [customers, setCustomers] = useState([]);
+
+    const handleNext = useCallback(() => {
+        const after = customers[customers.length - 1].id;
+        const url = `/customers?after=${after}`;
+
+        window.fetch(url, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }, [customers]);
+
 
     //use the same useEffect ceremony that we've seen before, using an
     // inline function to ensure we don't return a value to useEffect, and passing an
@@ -40,7 +52,8 @@ export const CustomerSearch = () => {
 
     return (
         <React.Fragment>
-            <SearchButtons />
+            <SearchButtons handleNext={handleNext} />
+
             <table>
                 <thead>
                     <tr>
