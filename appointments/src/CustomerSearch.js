@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-
 const CustomerRow = ({ customer }) => (
     <tr>
         <td>{customer.firstName}</td>
