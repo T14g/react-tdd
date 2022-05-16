@@ -18,20 +18,13 @@ const SearchButtons = ({ handleNext }) => (
 
 export const CustomerSearch = () => {
     const [customers, setCustomers] = useState([]);
+    const [queryString, setQueryString] = useState('');
 
-    const handleNext = useCallback(async () => {
+    const handleNext = useCallback(() => {
         const after = customers[customers.length - 1].id;
-        const url = `/customers?after=${after}`;
-
-        const result = await window.fetch(url, {
-            method: 'GET',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' }
-        });
-
-        setCustomers(await result.json());
-    }, [customers]);
-
+        const newQueryString = `?after=${after}`;
+        setQueryString(newQueryString);
+    }, [customers]);;
 
     //use the same useEffect ceremony that we've seen before, using an
     // inline function to ensure we don't return a value to useEffect, and passing an
@@ -39,7 +32,7 @@ export const CustomerSearch = () => {
     useEffect(() => {
 
         const fetchData = async () => {
-            const result = await window.fetch('/customers', {
+            const result = await window.fetch(`/customers${queryString}`, {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json' }
@@ -49,7 +42,7 @@ export const CustomerSearch = () => {
         }
 
         fetchData();
-    }, []);
+    }, [queryString]);
 
     return (
         <React.Fragment>
