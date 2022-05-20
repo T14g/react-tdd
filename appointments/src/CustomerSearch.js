@@ -10,6 +10,9 @@ const CustomerRow = ({ customer }) => (
 
 const SearchButtons = ({ handleNext }) => (
     <div className="button-bar">
+        <button role="button" id="previous-page">
+            Previous
+        </button>
         <button role="button" id="next-page" onClick={handleNext}>
             Next
         </button>
