@@ -8,9 +8,9 @@ const CustomerRow = ({ customer }) => (
     </tr>
 );
 
-const SearchButtons = ({ handleNext }) => (
+const SearchButtons = ({ handleNext, handlePrevious }) => (
     <div className="button-bar">
-        <button role="button" id="previous-page">
+        <button role="button" id="previous-page" onClick={handlePrevious}>
             Previous
         </button>
         <button role="button" id="next-page" onClick={handleNext}>
@@ -22,6 +22,8 @@ const SearchButtons = ({ handleNext }) => (
 export const CustomerSearch = () => {
     const [customers, setCustomers] = useState([]);
     const [queryString, setQueryString] = useState('');
+
+    const handlePrevious = useCallback(() => setQueryString(''), []);
 
     const handleNext = useCallback(() => {
         const after = customers[customers.length - 1].id;
@@ -49,7 +51,7 @@ export const CustomerSearch = () => {
 
     return (
         <React.Fragment>
-            <SearchButtons handleNext={handleNext} />
+            <SearchButtons handleNext={handleNext} handlePrevious={handlePrevious}/>
 
             <table>
                 <thead>
