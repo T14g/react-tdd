@@ -14,6 +14,8 @@ const twoCustomers = [
 
 const tenCustomers = Array.from('0123456789', id => ({ id }));
 
+const anotherTenCustomers = Array.from('ABCDEFGHIJ', id => ({ id }));
+
 describe('CustomerSearch', () => {
     let renderAndWait, elements, element, clickAndWait;
 
@@ -106,11 +108,25 @@ describe('CustomerSearch', () => {
         await renderAndWait(<CustomerSearch />);
         await clickAndWait(element('button#next-page'));
         await clickAndWait(element('button#previous-page'));
-        
+
         expect(window.fetch).toHaveBeenLastCalledWith(
             '/customers',
             expect.anything()
         );
+    });
+
+    it('moves back one page when clicking previous after multiple clicks of the next button', async () => {
+        window.fetch
+            .mockReturnValueOnce(fetchResponseOk(tenCustomers))
+            .mockReturnValue(fetchResponseOk(anotherTenCustomers));
+        await renderAndWait(<CustomerSearch />);
+        await clickAndWait(element('button#next-page'));
+        await clickAndWait(element('button#next-page'));
+        await clickAndWait(element('button#previous-page'));
+        
+        expect(window.fetch).toHaveBeenLastCalledWith(
+            '/customers?after=9',
+            expect.anything());
     });
 
 });

@@ -22,14 +22,16 @@ const SearchButtons = ({ handleNext, handlePrevious }) => (
 export const CustomerSearch = () => {
     const [customers, setCustomers] = useState([]);
     const [queryString, setQueryString] = useState('');
+    const [previousQueryString, setPreviousQueryString] = useState('');
 
-    const handlePrevious = useCallback(() => setQueryString(''), []);
+    const handlePrevious = useCallback(() => setQueryString(previousQueryString), [previousQueryString]);
 
     const handleNext = useCallback(() => {
         const after = customers[customers.length - 1].id;
         const newQueryString = `?after=${after}`;
+        setPreviousQueryString(queryString);
         setQueryString(newQueryString);
-    }, [customers]);;
+    }, [customers, queryString]);;
 
     //use the same useEffect ceremony that we've seen before, using an
     // inline function to ensure we don't return a value to useEffect, and passing an
