@@ -123,10 +123,25 @@ describe('CustomerSearch', () => {
         await clickAndWait(element('button#next-page'));
         await clickAndWait(element('button#next-page'));
         await clickAndWait(element('button#previous-page'));
-        
+
         expect(window.fetch).toHaveBeenLastCalledWith(
             '/customers?after=9',
             expect.anything());
+    });
+
+    it('moves back multiple pages', async () => {
+        window.fetch
+            .mockReturnValueOnce(fetchResponseOk(tenCustomers))
+            .mockReturnValue(fetchResponseOk(anotherTenCustomers));
+        await renderAndWait(<CustomerSearch />);
+        await clickAndWait(element('button#next-page'));
+        await clickAndWait(element('button#next-page'));
+        await clickAndWait(element('button#previous-page'));
+        await clickAndWait(element('button#previous-page'));
+        expect(window.fetch).toHaveBeenLastCalledWith(
+            '/customers',
+            expect.anything()
+        );
     });
 
 });
