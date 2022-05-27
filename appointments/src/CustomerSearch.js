@@ -21,17 +21,15 @@ const SearchButtons = ({ handleNext, handlePrevious }) => (
 
 export const CustomerSearch = () => {
     const [customers, setCustomers] = useState([]);
-    const [queryString, setQueryString] = useState('');
-    const [previousQueryString, setPreviousQueryString] = useState('');
+    const [queryStrings, setQueryStrings] = useState([]);
 
-    const handlePrevious = useCallback(() => setQueryString(previousQueryString), [previousQueryString]);
+    const handlePrevious = useCallback(() => setQueryStrings(queryStrings.slice(0, -1)));
 
     const handleNext = useCallback(() => {
         const after = customers[customers.length - 1].id;
-        const newQueryString = `?after=${after}`;
-        setPreviousQueryString(queryString);
-        setQueryString(newQueryString);
-    }, [customers, queryString]);;
+        const queryString = `?after=${after}`;
+        setQueryStrings([...queryStrings, queryString]);
+    }, [customers, queryString]);
 
     //use the same useEffect ceremony that we've seen before, using an
     // inline function to ensure we don't return a value to useEffect, and passing an
@@ -39,6 +37,10 @@ export const CustomerSearch = () => {
     useEffect(() => {
 
         const fetchData = async () => {
+            let queryString = '';
+            if (queryStrings.length > 0)
+                queryString = queryStrings[queryStrings.length - 1];
+
             const result = await window.fetch(`/customers${queryString}`, {
                 method: 'GET',
                 credentials: 'same-origin',
@@ -53,7 +55,7 @@ export const CustomerSearch = () => {
 
     return (
         <React.Fragment>
-            <SearchButtons handleNext={handleNext} handlePrevious={handlePrevious}/>
+            <SearchButtons handleNext={handleNext} handlePrevious={handlePrevious} />
 
             <table>
                 <thead>
