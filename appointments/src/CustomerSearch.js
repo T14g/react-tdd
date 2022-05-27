@@ -29,7 +29,7 @@ export const CustomerSearch = () => {
         const after = customers[customers.length - 1].id;
         const queryString = `?after=${after}`;
         setQueryStrings([...queryStrings, queryString]);
-    }, [customers, queryString]);
+    }, [customers, queryStrings]);
 
     //use the same useEffect ceremony that we've seen before, using an
     // inline function to ensure we don't return a value to useEffect, and passing an
@@ -51,7 +51,7 @@ export const CustomerSearch = () => {
         }
 
         fetchData();
-    }, [queryString]);
+    }, [queryStrings]);
 
     return (
         <React.Fragment>
