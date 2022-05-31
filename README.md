@@ -8,3 +8,5 @@ Apenas um repositório para estudo de TDD com React.js e Jest, com alguns bons e
 -Blocks into  Methods
 -Temporal coupling :?
 1
+
+Here we go again
