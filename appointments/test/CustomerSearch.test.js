@@ -119,6 +119,7 @@ describe('CustomerSearch', () => {
         window.fetch
             .mockReturnValueOnce(fetchResponseOk(tenCustomers))
             .mockReturnValue(fetchResponseOk(anotherTenCustomers));
+            
         await renderAndWait(<CustomerSearch />);
         await clickAndWait(element('button#next-page'));
         await clickAndWait(element('button#next-page'));
@@ -133,11 +134,13 @@ describe('CustomerSearch', () => {
         window.fetch
             .mockReturnValueOnce(fetchResponseOk(tenCustomers))
             .mockReturnValue(fetchResponseOk(anotherTenCustomers));
+
         await renderAndWait(<CustomerSearch />);
         await clickAndWait(element('button#next-page'));
         await clickAndWait(element('button#next-page'));
         await clickAndWait(element('button#previous-page'));
         await clickAndWait(element('button#previous-page'));
+
         expect(window.fetch).toHaveBeenLastCalledWith(
             '/customers',
             expect.anything()

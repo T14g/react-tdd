@@ -10,3 +10,13 @@ Apenas um repositório para estudo de TDD com React.js e Jest, com alguns bons e
 1
 
 Here we go again
+
+
+============================================
+
+My testing API will be like
+
+-Render
+-Render and wait
+-Click and wait
+-Element finder and elements
